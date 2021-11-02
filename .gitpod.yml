@@ -1,0 +1,8 @@
+ports:
+  - port: 5050
+    onOpen: open-preview
+
+
+tasks:
+  -
+    command: gradle run -t
