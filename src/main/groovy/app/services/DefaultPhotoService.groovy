@@ -14,8 +14,8 @@ class DefaultPhotoService implements PhotoService {
     @Override
     String save(UploadedFile f) {
         Path dest = Files.createTempFile(tmpDir,PREFIX,SUFFIX)
-        write dest, f.bytes fileName
-        dest.fileName.toString().replaceAll("^${PREFIX}", "").replaceAll("${SUFFIX}\$", "")
+        Files.write(dest,f.bytes)
+        dest.getFileName().toString().replaceAll("^${PREFIX}", "").replaceAll("${SUFFIX}\$", "")
     }
 
     @Override

@@ -8,25 +8,31 @@ import static ratpack.groovy.Groovy.ratpack
 ratpack {
     bindings {
         module (ThymeleafModule)
-        bind PhotoService, DefaultPhotoService
+        bind (PhotoService, DefaultPhotoService)
+
     }
     handlers {
         prefix("photo"){
             post {
                 PhotoService photoService ->
-                    def form = parse(Form)
+                    parse(Form.class).then({ form ->
                     def name = photoService.save(form.file("photo"))
                     redirect "/show/$name"
+                })
+
             }
             get(":name"){
                 PhotoService photoService ->
-                    response.sendFile context, photoService.get(pathTokens.name)
+                    response.sendFile(photoService.get(pathTokens.name))
             }
         }
         get("show/:name"){
-            render thymeleafTemplate("photo.html", name:pathTokens.name)
-        }
-        assets "public"
+              render thymeleafTemplate("photo") + getPathTokens().get("name")
+            }
+
+
+
+        files { dir "public" indexFiles 'index.html' }
 
 
     }
