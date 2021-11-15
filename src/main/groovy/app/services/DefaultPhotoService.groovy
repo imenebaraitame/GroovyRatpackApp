@@ -16,6 +16,7 @@ class DefaultPhotoService implements PhotoService {
         Path dest = Files.createTempFile(tmpDir,PREFIX,SUFFIX)
         Files.write(dest,f.bytes)
         dest.getFileName().toString().replaceAll("^${PREFIX}", "").replaceAll("${SUFFIX}\$", "")
+
     }
 
     @Override
