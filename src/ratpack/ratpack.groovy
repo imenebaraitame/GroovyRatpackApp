@@ -27,8 +27,10 @@ ratpack {
             }
         }
         get("show/:name"){
+
             name:getPathTokens().get("name")
             render thymeleafTemplate("photo")
+
             }
 
 

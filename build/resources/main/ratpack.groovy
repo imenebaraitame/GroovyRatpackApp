@@ -27,8 +27,13 @@ ratpack {
             }
         }
         get("show/:name"){
+<<<<<<< HEAD
             name:getPathTokens().get("name")
             render thymeleafTemplate("photo", )
+=======
+              render thymeleafTemplate("photo")
+               getPathTokens().get("name")
+>>>>>>> 4b03b5b5d145580e3e38328c94180adaddcd8888
             }
 
 
