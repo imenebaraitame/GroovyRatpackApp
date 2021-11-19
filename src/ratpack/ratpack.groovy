@@ -27,16 +27,11 @@ ratpack {
             }
         }
         get("show/:name"){
-
-            name:getPathTokens().get("name")
-            render thymeleafTemplate("photo")
-
-            }
-
-
+            def name = getPathTokens().get("name")
+            render( thymeleafTemplate("photo", ['name': name]) )
+        }
 
         files { dir "public" indexFiles 'index.html' }
-
 
     }
 }
