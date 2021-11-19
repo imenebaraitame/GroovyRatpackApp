@@ -7,8 +7,11 @@
     <title>Title</title>
 </head>
 <body>
-     <h1>$model.name</h1>
-     <img src="/photo/$model.name">
 
+     <h1>Photo ID: <h1 th:text="${name}" /></h1></p>
+
+     <img src="https://via.placeholder.com/150.png" th:attr="src=@{name}" />
+     
+    <p>Back to <a href="/">Home</a></p>
 </body>
 </html>

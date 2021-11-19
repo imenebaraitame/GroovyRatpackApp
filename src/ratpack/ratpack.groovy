@@ -1,7 +1,6 @@
 import app.model.PhotoService
 import app.services.DefaultPhotoService
 import ratpack.form.Form
-import ratpack.path.PathTokens
 import ratpack.thymeleaf3.ThymeleafModule
 import static ratpack.thymeleaf3.Template.thymeleafTemplate
 import static ratpack.groovy.Groovy.ratpack
@@ -28,15 +27,12 @@ ratpack {
             }
         }
         get("show/:name"){
-            name:getPathTokens().get("name")
-            render thymeleafTemplate("photo")
 
-            }
-
-
+            def name = getPathTokens().get("name")
+            render( thymeleafTemplate("photo", ['name': name]) )
+        }
 
         files { dir "public" indexFiles 'index.html' }
-
 
     }
 }
