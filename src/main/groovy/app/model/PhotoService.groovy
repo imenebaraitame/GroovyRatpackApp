@@ -16,7 +16,7 @@ interface PhotoService {
  * @return the file name
  */
 @NonBlocking
-    String save(UploadedFile f)
+    String save(UploadedFile f, String uploadPath)
 
 /**
  * Retrieves a file by name
