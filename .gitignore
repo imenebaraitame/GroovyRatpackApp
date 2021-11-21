@@ -21,3 +21,6 @@ gradle-app.setting
 # Mac
 .DS_Store
 **/.DS_Store
+
+# uploads directory
+public/uploads
