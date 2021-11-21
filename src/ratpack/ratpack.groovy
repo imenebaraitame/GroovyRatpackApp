@@ -41,6 +41,7 @@ ratpack {
             }
         }
 
+
         get('image/:id'){
             def imagePath = new File("${uploadPath}/${pathTokens['id']}")
             // you'd better check if the image exists...
