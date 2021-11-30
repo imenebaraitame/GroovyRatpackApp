@@ -25,7 +25,17 @@ interface PhotoService {
  * @return the file
  */
 
-    Path get(String name)
+    Path get(String name, UploadedFile f)
+
+    /**
+     * get the suffix of a file
+     *
+     * @param f
+     * @return the suffix
+     */
+
+    String SUFFIX(UploadedFile f)
+
 
     
 }

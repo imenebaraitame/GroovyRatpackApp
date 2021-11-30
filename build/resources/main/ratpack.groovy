@@ -1,6 +1,7 @@
 import app.model.PhotoService
 import app.services.DefaultPhotoService
 import ratpack.form.Form
+import ratpack.form.UploadedFile
 import ratpack.thymeleaf3.ThymeleafModule
 import static ratpack.thymeleaf3.Template.thymeleafTemplate
 import static ratpack.groovy.Groovy.ratpack
@@ -17,6 +18,7 @@ def uploadPath = baseDir.resolve(uploadDir)
 //def uploadPath = baseDir.getRoot().resolve(uploadDir)
 //def uploadPath = baseDir.getRoot().resolve("${publicDir}/${uploadDir}")
 
+
 ratpack {
     bindings {
         module (ThymeleafModule)
@@ -31,16 +33,19 @@ ratpack {
                     parse(Form.class).then({ def form ->
                     def f = form.file("photo")
                     def name = photoService.save(f, uploadPath.toString())
-                    redirect "/show/$name"
+                        String suffix = photoService.SUFFIX(f)
+                    redirect "/show/$name/$suffix"
                 })
 
             }
             get(":name"){
                PhotoService photoService ->
-                   response.sendFile(photoService.get(pathTokens.name))
+                   parse(Form.class).then({ def form ->
+                       def f = form.file("photo")
+                   response.sendFile(photoService.get(pathTokens.name, f))
+            })
             }
         }
-
 
         get('image/:id'){
             def imagePath = new File("${uploadPath}/${pathTokens['id']}")
@@ -49,11 +54,14 @@ ratpack {
             render Paths.get(imagePath.toURI())
         }
 
-        get("show/:name"){
+        get("show/:name/:suffix"){
             String fileId = getPathTokens().get("name")
-            String path = "/image/${fileId}.png"
+            String SU = getPathTokens().get("suffix")
+            String path = "/image/${fileId}${SU}"
             render( thymeleafTemplate("photo", ['fullpath': path]) )
+
         }
+
         files { dir "public" indexFiles 'index.html' }
 
     }
