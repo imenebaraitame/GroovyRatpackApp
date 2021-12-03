@@ -36,6 +36,7 @@ class DefaultPhotoService implements PhotoService {
         String suffix = f.getFileName().substring(dot)
     }
 
+
     private static String getFileName( String name,UploadedFile f) {
        "${PREFIX}${name}${SUFFIX(f)}"
     }

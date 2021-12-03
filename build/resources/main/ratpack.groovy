@@ -1,7 +1,6 @@
 import app.model.PhotoService
 import app.services.DefaultPhotoService
 import ratpack.form.Form
-import ratpack.form.UploadedFile
 import ratpack.thymeleaf3.ThymeleafModule
 import static ratpack.thymeleaf3.Template.thymeleafTemplate
 import static ratpack.groovy.Groovy.ratpack
@@ -34,6 +33,7 @@ ratpack {
                     def f = form.file("photo")
                     def name = photoService.save(f, uploadPath.toString())
                         String suffix = photoService.SUFFIX(f)
+
                     redirect "/show/$name/$suffix"
                 })
 
@@ -42,7 +42,8 @@ ratpack {
                PhotoService photoService ->
                    parse(Form.class).then({ def form ->
                        def f = form.file("photo")
-                   response.sendFile(photoService.get(pathTokens.name, f))
+
+                       response.sendFile(photoService.get(pathTokens.name, f))
             })
             }
         }
@@ -57,8 +58,18 @@ ratpack {
         get("show/:name/:suffix"){
             String fileId = getPathTokens().get("name")
             String SU = getPathTokens().get("suffix")
-            String path = "/image/${fileId}${SU}"
-            render( thymeleafTemplate("photo", ['fullpath': path]) )
+
+            if(SU.contains(".jpg"))
+            {
+                String path = "/image/${fileId}${SU}"
+                render( thymeleafTemplate("photo", ['fullpath': path]) )
+            } else{
+                //String pathpdf = "/image/${fileId}${SU}"
+                //render( thymeleafTemplate("photo",[fullpathpdf:pathpdf]) )
+                render(thymeleafTemplate("/pdfjs-2.10.377-dist/web/viewer.html"))
+
+
+            }
 
         }
 
