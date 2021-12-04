@@ -35,9 +35,6 @@ interface PhotoService {
      * @return the suffix
      */
 
-    String SUFFIX(UploadedFile f)
-
-
-
-    
+    String getSuffix(UploadedFile f)
+   
 }

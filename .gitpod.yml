@@ -1,8 +1,14 @@
 ports:
   - port: 5050
     onOpen: open-preview
-
+    # onOpen: open-browser
 
 tasks:
-  -
-    command: gradle run -t
+  - init: |
+      sudo mkdir -p public/uploads
+      sudo mkdir -p src/ratpack/public/uploads
+      sudo chmod 777 -R public/uploads
+    command: |
+      gradle shadowJar
+      java -jar build/libs/GroovyRatpackApp.jar 
+  - command: gp await-port 5050 && gp preview "$(gp url 5050)/"
