@@ -6,6 +6,7 @@ ports:
 tasks:
   - init: |
       sudo mkdir -p public/uploads
+      sudo mkdir -p src/ratpack/public/uploads
       sudo chmod 777 -R public/uploads
     command: |
       gradle shadowJar
