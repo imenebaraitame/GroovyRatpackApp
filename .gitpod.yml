@@ -1,8 +1,12 @@
 ports:
   - port: 5050
     onOpen: open-preview
-
+    # onOpen: open-browser
 
 tasks:
-  -
-    command: gradle run -t
+  - init: |
+      echo "One time init..."
+      sudo mkdir -p public/uploads
+    command: |
+      gradle runShadow
+  - command: gp await-port 5050 && gp preview "$(gp url 5050)/"
