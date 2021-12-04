@@ -22,29 +22,24 @@ ratpack {
     bindings {
         module (ThymeleafModule)
         bind (PhotoService, DefaultPhotoService)
-
     }
     handlers {
         prefix("photo"){
             post {
                 PhotoService photoService ->
-                    
                     parse(Form.class).then({ def form ->
                     def f = form.file("photo")
                     def name = photoService.save(f, uploadPath.toString())
-                        String suffix = photoService.SUFFIX(f)
-
+                    String suffix = photoService.getSuffix(f)
                     redirect "/show/$name/$suffix"
                 })
-
             }
             get(":name"){
                PhotoService photoService ->
-                   parse(Form.class).then({ def form ->
-                       def f = form.file("photo")
-
-                       response.sendFile(photoService.get(pathTokens.name, f))
-            })
+                parse(Form.class).then({ def form ->
+                    def f = form.file("photo")
+                    response.sendFile(photoService.get(pathTokens.name, f))
+                })
             }
         }
 
@@ -58,18 +53,13 @@ ratpack {
         get("show/:name/:suffix"){
             String fileId = getPathTokens().get("name")
             String SU = getPathTokens().get("suffix")
+            String path = "/image/${fileId}${SU}"
 
-            if(SU.contains(".jpg"))
-            {
-                String path = "/image/${fileId}${SU}"
+            if (SU in [".jpg", ".jpeg", ".png"]) {                
                 render( thymeleafTemplate("photo", ['fullpath': path]) )
             } else{
-                //String pathpdf = "/image/${fileId}${SU}"
-                //render( thymeleafTemplate("photo",[fullpathpdf:pathpdf]) )
-                render(thymeleafTemplate("/pdfjs-2.10.377-dist/web/viewer.html"))
-
+                render( thymeleafTemplate("pdf", ['fullpath': path]) )
             }
-
         }
 
         files { dir "public" indexFiles 'index.html' }

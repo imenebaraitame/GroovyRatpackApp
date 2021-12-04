@@ -12,13 +12,13 @@ class DefaultPhotoService implements PhotoService {
 
     @Override
     String save(UploadedFile f, String uploadPath) {
-
-        Path dest = Files.createTempFile(tmpDir, PREFIX,SUFFIX(f))
-        String fileId = dest.fileName.toString().replaceAll("^${PREFIX}", "").replaceAll("${SUFFIX(f)}\$", "")
+        String ext = getSuffix(f)
+        Path dest = Files.createTempFile(tmpDir, PREFIX, ext)
+        String fileId = dest.fileName.toString().replaceAll("^${PREFIX}", "").replaceAll("${ext}\$", "")
         def unixPath = Files.write(dest, f.bytes)
         println("unixPath: ${unixPath}, fileId: ${fileId}")
 
-        File outputFile = new File(uploadPath, "${fileId}${SUFFIX(f)}")
+        File outputFile = new File(uploadPath, "${fileId}${ext}")
         f.writeTo(outputFile.newOutputStream())
         println("outputFile: ${outputFile.path}, Exists: ${outputFile.exists()}")
         return fileId
@@ -31,16 +31,13 @@ class DefaultPhotoService implements PhotoService {
     }
 
     @Override
-    String SUFFIX(UploadedFile f){
+    String getSuffix(UploadedFile f){
         int dot = f.getFileName().lastIndexOf(".")
-        String suffix = f.getFileName().substring(dot)
+        return f.getFileName().substring(dot)
     }
 
-
-    private static String getFileName( String name,UploadedFile f) {
-       "${PREFIX}${name}${SUFFIX(f)}"
+    private static String getFileName(String name,UploadedFile f) {
+       return "${PREFIX}${name}${getSuffix(f)}"
     }
-
-
 
 }

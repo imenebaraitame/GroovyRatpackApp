@@ -5,8 +5,9 @@ ports:
 
 tasks:
   - init: |
-      echo "One time init..."
       sudo mkdir -p public/uploads
+      sudo chmod 777 -R public/uploads
     command: |
-      gradle runShadow
+      gradle shadowJar
+      java -jar build/libs/GroovyRatpackApp.jar 
   - command: gp await-port 5050 && gp preview "$(gp url 5050)/"
