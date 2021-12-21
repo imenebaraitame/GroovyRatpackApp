@@ -11,8 +11,21 @@
     <h1>Path: <h1 th:text="${fullpath}" /></h1>
 
 
-    <!-- pdf viewer -->
+<p>Preview PDF using embedded viewer:</p>
+<embed
+    th:src="${fullpath + '#toolbar=1&navpanes=1&scrollbar=1'}"
+    type="application/pdf"
+    scrolling="auto"
+    height="100%"
+    width="100%"
+></embed>
 
+<p>Preview PDF using iframe:</p>
+<iframe
+th:src="${fullpath}"
+  style="width:100%;height:50vh;"
+  frameborder="0"
+></iframe>
 
     <p>Back to <a href="/">Home</a></p>
 </body>
