@@ -8,7 +8,7 @@ import java.nio.file.Path
  *An interface for working with the uploaded photos
  */
 
-interface PhotoService {
+interface FileService {
 /**
  * Save the file and return the file name
  *

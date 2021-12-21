@@ -1,11 +1,11 @@
 package app.services
 
-import app.model.PhotoService
+import app.model.FileService
 import ratpack.form.UploadedFile
 import java.nio.file.Files
 import java.nio.file.Path
 
-class DefaultPhotoService implements PhotoService {
+class DefaultFileService implements FileService {
 
     private static final prefix = "ratpack-"
     final Path tmpDir = File.createTempDir().toPath()
