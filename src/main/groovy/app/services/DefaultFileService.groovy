@@ -14,11 +14,13 @@ class DefaultFileService implements FileService {
     String save(UploadedFile f, String uploadPath) {
         String suffix = getSuffix(f)
         Path dest = Files.createTempFile(tmpDir, prefix, suffix)
-        String fileId = dest.fileName.toString().replaceAll("^${prefix}", "")
+        //String fileId = dest.fileName.toString().replaceAll("^${prefix}", "")
+        String fileId = dest.fileName.toString().replaceAll("^${prefix}", "").replaceAll("${suffix}\$", "")
 
         def unixPath = Files.write(dest, f.bytes)
         println("unixPath: ${unixPath}, fileId: ${fileId}")
-        File outputFile = new File(uploadPath, "${fileId}")
+        //File outputFile = new File(uploadPath, "${fileId}")
+        File outputFile = new File(uploadPath, "${fileId}${suffix}")
 
 
         f.writeTo(outputFile.newOutputStream())
@@ -40,7 +42,8 @@ class DefaultFileService implements FileService {
     }
 
     private static String getFileName(String name,UploadedFile f) {
-       return "${prefix}${name}"
+        return "${prefix}${name}${getSuffix(f)}"
+       //return "${prefix}${name}"
     }
 
 }

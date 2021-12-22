@@ -32,14 +32,17 @@ ratpack {
                     parse(Form.class).then({ def form ->
                     def f = form.file("upload")
                     def name = fileService.save(f, uploadPath.toString())
-                        def contentType = context.get(MimeTypes).getContentType(name)
+                        String suffix = fileService.getSuffix(f)
+                       // def contentType = context.get(MimeTypes).getContentType(name)
 
-                      if(contentType.contains("application/pdf"))
+                      /*if(contentType.contains("application/pdf"))
                        {
                            redirect "/show/$name"
                        }else{
                           redirect "/appear/$name"
                        }
+                       */
+                        redirect "/show/$name/$suffix"
 
                 })
             }
@@ -59,17 +62,34 @@ ratpack {
             render Paths.get(filePath.toURI())
         }
 
+        get("show/:name/:suffix") {
+            String fileId = getPathTokens().get("name")
+            String SU = getPathTokens().get("suffix")
+            String path = "/file/${fileId}${SU}"
+
+                if (SU in [".jpg", ".jpeg", ".png"]) {
+                    render(thymeleafTemplate("photo", ['fullpath': path]))
+                } else {
+                    render(thymeleafTemplate("pdf", ['fullpath': path]))
+                }
+
+        }
+
+       /*
         get("show/:name"){
             String fileId = getPathTokens().get("name")
             String path = "/file/${fileId}"
             render( thymeleafTemplate("pdf", ['fullpath': path]) )
-
         }
+        */
+
+        /*
         get("appear/:name"){
             String fileId = getPathTokens().get("name")
             String path = "/file/${fileId}"
             render( thymeleafTemplate("photo", ['fullpath': path]) )
         }
+        */
 
         files { dir "public" indexFiles 'index.html' }
 
