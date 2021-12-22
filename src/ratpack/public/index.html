@@ -1,14 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <style>
+    .file-upload__button{
+       background-color: white;
+       position:left;
+       color: dimgray;
+       border: 3px solid #e7e7e7;
+       border-radius: 5px;
+       padding: 9px 100px;
+    }
+
+    .file-upload__button:hover {
+       background-color: #e7e7e7;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      color: DimGrey;
+      margin-left: 30px;
+    }
+    h1.title{
+      color:black;
+      margin-left: 30px;
+    }
+   </style>
+
 </head>
+
 <body>
-<h1>Send me a file!</h1>
+<h1 class = "title">Send me a file!</h1>
+
 <form action="/upload" method="POST" enctype="multipart/form-data">
-    <input name = "upload" type = "file" >
+
+    <lable>Upload image or PDF file (.png,.jpg, or .PDF)</lable>
+    <input class = "file-upload__button" name = "upload" type = "file" id ='file'><br>
     <input type = "submit" value="Upload files">
 </form>
+
 </body>
+
 </html>
