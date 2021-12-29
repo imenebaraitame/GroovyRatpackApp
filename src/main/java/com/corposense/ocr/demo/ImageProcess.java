@@ -33,14 +33,9 @@ public class ImageProcess {
 	// Linux
 	//public static final String IMAGE_MAGICK_PATH = "/usr/bin/";
 
-	
-<<<<<<< HEAD
-=======
 	@Inject
->>>>>>> c82a67c9b59a18e9ee34d575f5018c472c9b842c
 	public ImageProcess(String imagePath) {
 		this.imagePath = imagePath;
-
 	}
 	
 	/**
