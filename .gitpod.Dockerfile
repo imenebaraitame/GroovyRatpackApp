@@ -12,6 +12,7 @@ RUN apt-get update -y && \
     apt-get install tesseract-ocr-fra -y && \
     apt-get install imagemagick -y
 
+RUN bash -c ". /home/gitpod/.sdkman/bin/sdkman-init.sh && sdk install java 8.0.292.j9-adpt"    
 RUN wget https://github.com/tesseract-ocr/tessdata/blob/master/eng.traineddata
 RUN wget https://github.com/tesseract-ocr/tessdata/blob/master/ara.traineddata
 RUN wget https://github.com/tesseract-ocr/tessdata/blob/master/fra.traineddata

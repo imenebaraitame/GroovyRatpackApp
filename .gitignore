@@ -6,6 +6,7 @@
 gradle/
 gradlew*
 src/ratpack/public/uploads/
+public/uploads/
 
 
 # Ignore Gradle GUI config
