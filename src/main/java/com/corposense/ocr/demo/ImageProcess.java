@@ -32,7 +32,6 @@ public class ImageProcess {
 	//public static final String IMAGE_MAGICK_PATH = "/usr/bin/";
 
 	
-	
 	public ImageProcess(String imagePath) {
 		this.imagePath = imagePath;
 
