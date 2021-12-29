@@ -10,7 +10,8 @@ buildscript {
     }
 }
 plugins {
-    id 'groovy'   
+    id 'groovy'
+    id 'java'
 }
 
 repositories {
@@ -30,10 +31,21 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation ratpack.dependency("thymeleaf3")
+
+
+    //ocr project dependencies
+    implementation 'net.sourceforge.tess4j:tess4j:4.1.1'
+    implementation 'com.itextpdf:itextpdf:5.5.13.2'
+    implementation 'org.im4java:im4java:1.4.0'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.24'
+
 }
+
 dependencies {
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.32'
 }
+
+
 test {
     useJUnitPlatform()
 }

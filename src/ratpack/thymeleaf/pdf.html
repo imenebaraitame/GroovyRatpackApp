@@ -9,13 +9,13 @@
 </head>
 <body>
     <h1>Path: <h1 th:text="${fullpath}" /></h1>
-    <iframe
+    <!--<iframe
             th:src="${fullpath}"
             style="width:100%;height:50vh;"
             frameborder="0"
-    ></iframe>
+    ></iframe>-->
 
-    <!--<embed th:src="${fullpath}" type="application/pdf" width="100%" height="500px" />-->
+    <embed th:src="${fullpath}" type="application/pdf" width="100%" height="500px" />
 
   <p>Back to <a href="/">Home</a></p>
 </body>

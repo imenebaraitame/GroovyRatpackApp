@@ -16,7 +16,7 @@ class DefaultFileService implements FileService {
         Path dest = Files.createTempFile(tmpDir, prefix, suffix)
         String fileId = dest.fileName.toString().replaceAll("^${prefix}", "")
 
-        def unixPath = Files.write(dest, f.bytes)
+        Path unixPath = Files.write(dest, f.bytes)
         println("unixPath: ${unixPath}, fileId: ${fileId}")
         File outputFile = new File(uploadPath, "${fileId}")
 
