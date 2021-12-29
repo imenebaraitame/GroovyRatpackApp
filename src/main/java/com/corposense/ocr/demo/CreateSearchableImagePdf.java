@@ -1,5 +1,7 @@
 package com.corposense.ocr.demo;
 
+import com.google.inject.Inject;
+
 import net.sourceforge.tess4j.ITesseract.RenderedFormat;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -13,7 +15,7 @@ public class CreateSearchableImagePdf {
 	String input_file; String output_file; String configfileValue;
 	
 
-	
+	@Inject
 	public CreateSearchableImagePdf(String input_file, String output_file, String configfileValue){
 		this.input_file = input_file;
 		this.output_file = output_file;

@@ -7,6 +7,8 @@ import org.im4java.core.IM4JavaException;
 import org.im4java.core.IMOperation;
 import org.im4java.process.ProcessStarter;
 
+import com.google.inject.Inject;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -32,7 +34,7 @@ public class ImageProcess {
 	//public static final String IMAGE_MAGICK_PATH = "/usr/bin/";
 
 	
-	
+	@Inject
 	public ImageProcess(String imagePath) {
 		this.imagePath = imagePath;
 
