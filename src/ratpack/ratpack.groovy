@@ -20,10 +20,14 @@ import ratpack.file.MimeTypes
 
 String uploadDir = 'uploads'
 String publicDir = 'public'
+String generatedFilesDir = "generatedFiles"
+
 Path baseDir = BaseDir.find("${publicDir}/${uploadDir}")
+Path baseGeneratedFilesDir = BaseDir.find("${publicDir}/${generatedFilesDir}")
 //def baseDir = BaseDir.findBaseDir()
 //def baseDir = BaseDir.find(".")
 
+Path generatedFilesPath = baseGeneratedFilesDir.resolve(generatedFilesDir)
 Path uploadPath = baseDir.resolve(uploadDir)
 //def uploadPath = baseDir.getRoot().resolve(uploadDir)
 //def uploadPath = baseDir.getRoot().resolve("${publicDir}/${uploadDir}")
@@ -46,10 +50,11 @@ ratpack {
                 FileService fileService->
                     parse(Form.class).then({ Form form ->
                         UploadedFile f = form.file("upload")
-                    String name = fileService.save(f, uploadPath.toString())
-                        try {
-                            String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(name)
-                            String finalImage = imageProcess.ImgAfterRemovingBackground(name)
+                        String name = fileService.save(f, uploadPath.toString())
+
+                            File filePath = new File("${uploadPath}/${name}")
+                            String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(filePath.toString())
+                            String finalImage = imageProcess.ImgAfterRemovingBackground(filePath.toString())
                             CreateSearchableImagePdf createPdf = new CreateSearchableImagePdf(finalImage
                                     , "./textonly_pdf", "0")
                             createPdf.textOnlyPdf(finalImage)
@@ -58,48 +63,55 @@ ratpack {
 
                             Path path = Paths.get("textonly_pdf.pdf")
                             String ExistingPdfFilePath = path.toAbsolutePath().toString()
-                            String outputFilePath = "./newFile.pdf"
+                            String outputFilePath = "newFile.pdf"
+                            File outputFile = new File(generatedFilesPath.toString(),"${outputFilePath}")
+                            println(outputFile)
 
                             imageLocationsAndSize.createPdfWithOriginalImage(ExistingPdfFilePath,
-                                    outputFilePath, imageNBorder)
-                        }catch (Exception e) {
-                            System.err.println("Exception:" + e.getMessage());
-                        }
+                                    outputFile.toString(), imageNBorder)
 
-                        String contentType = context.get(MimeTypes).getContentType(name)
-                      if(contentType.contains("application/pdf"))
-                       {
-                           redirect "/show/$name"
-                       }else{
-                          redirect "/appear/$name"
-                       }
+
+                        //String contentType = context.get(MimeTypes).getContentType(name)
+                     // if(contentType.contains("application/pdf"))
+                      // {
+                           redirect "/show/$outputFilePath"
+                      // }else{
+                       //   redirect "/appear/$name"
+                       //}
 
                 })
             }
-            get(":name"){
+            get(":outputFilePath"){
                 FileService fileService ->
                 parse(Form.class).then({ Form form ->
                     UploadedFile f = form.file("upload")
-                    response.sendFile(fileService.get(pathTokens.name, f))
+                    response.sendFile(fileService.get(pathTokens.outputFilePath, f))
                 })
             }
         }
-
+/*
         get('file/:id'){
             File filePath = new File("${uploadPath}/${pathTokens['id']}")
             // you'd better check if the file exists...
             println("filePath: ${filePath}, exists: ${filePath.exists()}")
             render Paths.get(filePath.toURI())
         }
+*/
+        get('file/:id'){
+            File filePath = new File("${generatedFilesPath}/${pathTokens['id']}")
+            // you'd better check if the file exists...
+            println("filePath: ${filePath}, exists: ${filePath.exists()}")
+            render Paths.get(filePath.toURI())
+        }
 
-        get("show/:name"){
-            String fileId = getPathTokens().get("name")
+        get("show/:outputFilePath"){
+            String fileId = getPathTokens().get("outputFilePath")
             String path = "/file/${fileId}"
             render( thymeleafTemplate("pdf", ['fullpath': path]) )
 
         }
         get("appear/:name"){
-            String fileId = getPathTokens().get("name")
+            String fileId = getPathTokens().get("outputFilePath")
             String path = "/file/${fileId}"
             render( thymeleafTemplate("photo", ['fullpath': path]) )
         }

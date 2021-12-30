@@ -82,9 +82,7 @@ public class ImageLocationsAndSize extends PDFStreamEngine{
              imageYPosition = ctmNew.getTranslateY();
 		
 	}
-	
-	
-	
+
 	/**
      * Place image on existing pdf.
      * @param inputFilePath
