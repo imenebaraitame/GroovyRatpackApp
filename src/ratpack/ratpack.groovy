@@ -81,7 +81,11 @@ ratpack {
                                     outputFile.toString(), imageNBorder)
 
                             redirect "/show/$outputFilePath"
-                        }else {
+
+                        }
+
+
+                         else {
 
                             String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(filePath.toString())
                             String finalImage = imageProcess.ImgAfterRemovingBackground(filePath.toString())
@@ -146,3 +150,4 @@ ratpack {
 
     }
 }
+
