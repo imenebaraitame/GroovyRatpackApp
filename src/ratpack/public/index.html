@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href='/images/favicon.ico' rel='shortcut icon' />
 
     <style>
     .file-upload__button{
@@ -38,22 +39,14 @@
 
     <lable>Upload image or PDF file (.png,.jpg, or .PDF)</lable>
     <input class = "file-upload__button" name = "upload" type = "file" id ='file'><br>
-    <div>
-        <label for="SrecheablePDF"></label>
-        <input type="radio"
-               name="Output"
-               id = SrecheablePDF
-               value="1">Create a searcheable pdf with invisible text layer
-        <br>
-    </div>
-    <div>
-        <label for="Textoverlay"></label>
-        <input type="radio"
-               name="Output"
-               id ="Textoverlay"
-               value="2">Just extract and show overlay
-    </div>
-        <br>
+
+    <label for="options">please Choose one of these options:</label>
+    <select name="options" id="options">
+        <option value="SearchablePDF">Create a searchable pdf with invisible text layer</option>
+        <option value="Textoverlay">Just extract and show overlay</option>
+    </select>
+
+
     <input type = "submit" value=" Start OCR">
 </form>
 
