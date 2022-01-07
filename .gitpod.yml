@@ -15,10 +15,10 @@ tasks:
   - init: |
       sudo mkdir -p public/uploads
       sudo mkdir -p src/ratpack/public/uploads
-      sudo mkdir -p public/js/generatedFiles
-      sudo mkdir -p src/ratpack/public/js/generatedFiles
+      sudo mkdir -p public/generatedFiles
+      sudo mkdir -p src/ratpack/public/generatedFiles
       sudo chmod 777 -R public/uploads
-      sudo chmod 777 -R public/js/generatedFiles
+      sudo chmod 777 -R public/generatedFiles
     command: |
       gradle shadowJar
       java -jar build/libs/GroovyRatpackApp.jar 

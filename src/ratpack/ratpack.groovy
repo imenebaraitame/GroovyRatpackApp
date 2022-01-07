@@ -10,7 +10,7 @@ import ratpack.form.Form
 import ratpack.form.UploadedFile
 import ratpack.thymeleaf3.ThymeleafModule
 
-
+import javax.swing.JCheckBox
 import java.nio.file.Path
 
 import static ratpack.thymeleaf3.Template.thymeleafTemplate
@@ -22,10 +22,9 @@ import ratpack.file.MimeTypes
 String uploadDir = 'uploads'
 String publicDir = 'public'
 String generatedFilesDir = "generatedFiles"
-String generatedDir = 'public/js'
 
 Path baseDir = BaseDir.find("${publicDir}/${uploadDir}")
-Path baseGeneratedFilesDir = BaseDir.find("${generatedDir}/${generatedFilesDir}")
+Path baseGeneratedFilesDir = BaseDir.find("${publicDir}/${generatedFilesDir}")
 //def baseDir = BaseDir.findBaseDir()
 //def baseDir = BaseDir.find(".")
 
@@ -136,20 +135,13 @@ ratpack {
             println("filePath: ${filePath}, exists: ${filePath.exists()}")
             render Paths.get(filePath.toURI())
         }
-/*
+
         get("show/:outputFilePath"){
             String fileId = getPathTokens().get("outputFilePath")
             String path = "/file/${fileId}"
             render( thymeleafTemplate("pdf", ['fullpath': path]) )
 
         }
-
- */
-        get("show/:outputFilePath"){
-
-            render( thymeleafTemplate("viewer") )
-        }
-
         get("appear/:name"){
             String fileId = getPathTokens().get("outputFilePath")
             String path = "/file/${fileId}"
