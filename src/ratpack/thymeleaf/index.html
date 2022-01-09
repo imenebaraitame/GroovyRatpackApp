@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html   xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -42,8 +44,8 @@
 
     <label for="options">please Choose one of these options:</label>
     <select name="options" id="options">
-        <option value="SearchablePDF">Create a searchable pdf with invisible text layer</option>
-        <option value="Textoverlay">Just extract and show overlay</option>
+        <option value="SearchablePDF"><h1 th:text="${pdf}"></h1></option>
+        <option value="Textoverlay"><h1 th:text="${text}"></h1></option>
     </select>
 
 

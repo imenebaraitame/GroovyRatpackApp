@@ -10,7 +10,6 @@ import ratpack.form.Form
 import ratpack.form.UploadedFile
 import ratpack.thymeleaf3.ThymeleafModule
 
-import javax.swing.JCheckBox
 import java.nio.file.Path
 
 import static ratpack.thymeleaf3.Template.thymeleafTemplate
@@ -56,7 +55,6 @@ ratpack {
                         String name = fileService.save(f, uploadPath.toString())
                         String contentType = context.get(MimeTypes).getContentType(name)
                         File filePath = new File("${uploadPath}/${name}")
-
 
                         if(contentType.contains("application/pdf")) {
                             extractImage.takeImageFromPdf(filePath.toString());
@@ -147,9 +145,15 @@ ratpack {
             String path = "/file/${fileId}"
             render( thymeleafTemplate("photo", ['fullpath': path]) )
         }
+        get{
+            String SearchablePDF = "Create a searchable pdf with invisible text layer"
+            String Textoverlay = "Just extract and show overlay"
+            
+            render(thymeleafTemplate("index",['pdf':SearchablePDF,'text':Textoverlay ]))
+        }
 
 
-        files { dir "public" indexFiles 'index.html' }
+
 
     }
 }
