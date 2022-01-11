@@ -145,12 +145,16 @@ ratpack {
             String path = "/file/${fileId}"
             render( thymeleafTemplate("photo", ['fullpath': path]) )
         }
+
         get{
             String SearchablePDF = "Create a searchable pdf with invisible text layer"
             String Textoverlay = "Just extract and show overlay"
-            
-            render(thymeleafTemplate("index",['pdf':SearchablePDF,'text':Textoverlay ]))
+           def options = ['pdf':SearchablePDF,'text':Textoverlay ]
+            render(thymeleafTemplate("index",options))
         }
+
+
+
 
 
 
