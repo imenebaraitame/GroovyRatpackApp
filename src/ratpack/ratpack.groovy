@@ -69,39 +69,15 @@ ratpack {
                                 File outputFile1 = new File(generatedFilesPath.toString(), "${outputFilePath1}")
                                 println(outputFile1)
                                 extractImage.MergePdfDocuments(inputFile,"./newFile_pdf_", outputFile1.toString());
-                                /*
 
+                                /*
                                 String outputFilePath2 = "mergedText.pdf"
                                 File outputFile2 = new File(generatedFilesPath.toString(), "${outputFilePath2}")
                                 println(outputFile2)
                                 extractImage.MergePdfDocuments(inputFile,"./ocrDemo_pdf_",outputFile2.toString());
 
                                  */
-                                /*
-                                extractImage.takeImageFromPdf(filePath.toString())
-                                Path imgPath = Paths.get("ExtractedImage_1.png")
-                                String img = imgPath.toAbsolutePath().toString()
 
-                                //Image processing.
-                                String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(img)
-                                String finalImage = imageProcess.ImgAfterRemovingBackground(img)
-                                // configfileValue = 0->make the image visible, =1->make the image invisible
-                                CreateSearchableImagePdf createPdf = new CreateSearchableImagePdf(finalImage
-                                        , "./textonly_pdf", "0")
-                                createPdf.textOnlyPdf(finalImage)
-
-                                println("getting the size and the location of the image from textonly_pdf")
-
-                                Path path = Paths.get("textonly_pdf.pdf")
-                                String ExistingPdfFilePath = path.toAbsolutePath().toString()
-                                String outputFilePath = "newFile.pdf"
-                                File outputFile = new File(generatedFilesPath.toString(), "${outputFilePath}")
-                                println(outputFile)
-
-                                imageLocationsAndSize.createPdfWithOriginalImage(ExistingPdfFilePath,
-                                        outputFile.toString(), imageNBorder)
-
-                                 */
 
                                 redirect "/show/$outputFilePath1"
 
