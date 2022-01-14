@@ -40,12 +40,12 @@ dependencies {
     implementation 'org.apache.pdfbox:pdfbox:2.0.24'
 
 }
-/*
+
 dependencies {
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.32'
 }
 
- */
+ 
 
 
 
