@@ -68,12 +68,15 @@ ratpack {
                                 String outputFilePath1 = "mergedImgPdf.pdf"
                                 File outputFile1 = new File(generatedFilesPath.toString(), "${outputFilePath1}")
                                 println(outputFile1)
-                                extractImage.MergePdfDocuments(inputFile,"./newFile_pdf_",outputFilePath1);
+                                extractImage.MergePdfDocuments(inputFile,"./newFile_pdf_", outputFile1.toString());
+                                /*
 
                                 String outputFilePath2 = "mergedText.pdf"
                                 File outputFile2 = new File(generatedFilesPath.toString(), "${outputFilePath2}")
                                 println(outputFile2)
-                                extractImage.MergePdfDocuments(inputFile,"./ocrDemo_pdf_", outputFilePath2);
+                                extractImage.MergePdfDocuments(inputFile,"./ocrDemo_pdf_",outputFile2.toString());
+
+                                 */
                                 /*
                                 extractImage.takeImageFromPdf(filePath.toString())
                                 Path imgPath = Paths.get("ExtractedImage_1.png")
@@ -109,7 +112,7 @@ ratpack {
 
                                 // configfileValue = 0->make the image visible, =1->make the image invisible
                                 CreateSearchableImagePdf createPdf = new CreateSearchableImagePdf(finalImage
-                                        , "./textonly_pdf_1", "0")
+                                        , "./textonly_pdf_", "0")
                                 createPdf.textOnlyPdf(finalImage,1)
 
                                 println("getting the size and the location of the image from textonly_pdf_1")

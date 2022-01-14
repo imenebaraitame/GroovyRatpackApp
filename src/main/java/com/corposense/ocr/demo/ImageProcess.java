@@ -1,5 +1,6 @@
 package com.corposense.ocr.demo;
 
+import com.google.inject.Inject;
 import com.recognition.software.jdeskew.ImageDeskew;
 import net.sourceforge.tess4j.util.ImageHelper;
 import org.im4java.core.ConvertCmd;
@@ -32,7 +33,7 @@ public class ImageProcess {
 	//public static final String IMAGE_MAGICK_PATH = "/usr/bin/";
 
 	
-	
+@Inject
 	public ImageProcess(String imagePath) {
 		this.imagePath = imagePath;
 
