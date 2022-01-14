@@ -1,9 +1,11 @@
 import app.model.FileService
 import app.services.DefaultFileService
 import com.corposense.ocr.demo.CreateSearchableImagePdf
-import com.corposense.ocr.demo.ExtractImage
+import com.corposense.ocr.demo.extractImage
 import com.corposense.ocr.demo.ImageLocationsAndSize
 import com.corposense.ocr.demo.ImageProcess
+import com.corposense.ocr.demo.ImageText
+import com.corposense.ocr.demo.TextPdf
 import com.corposense.ocr.demo.Utils
 
 import ratpack.form.Form
@@ -32,7 +34,6 @@ Path uploadPath = baseDir.resolve(uploadDir)
 //def uploadPath = baseDir.getRoot().resolve(uploadDir)
 //def uploadPath = baseDir.getRoot().resolve("${publicDir}/${uploadDir}")
 
-
 ratpack {
     bindings {
         module (ThymeleafModule)
@@ -41,84 +42,118 @@ ratpack {
         bind(Utils)
         bind(CreateSearchableImagePdf)
         bind(ImageProcess)
-        bind(ExtractImage)
+        bind(extractImage)
+        bind(ImageText)
+        bind(TextPdf)
     }
     handlers {
         prefix("upload"){
             post {
                 CreateSearchableImagePdf createSearchableImagePdf,
                 ImageLocationsAndSize imageLocationsAndSize, ImageProcess imageProcess,
-                ExtractImage extractImage,
+                extractImage extractImage,
+                ImageText imagetext,
+                TextPdf textPdf,
                 FileService fileService->
                     parse(Form.class).then({ Form form ->
                         UploadedFile f = form.file("upload")
                         String name = fileService.save(f, uploadPath.toString())
                         String contentType = context.get(MimeTypes).getContentType(name)
                         File filePath = new File("${uploadPath}/${name}")
+                        String inputFile = filePath.toString()
 
-                        if(contentType.contains("application/pdf")) {
-                            extractImage.takeImageFromPdf(filePath.toString());
-                            Path imgPath = Paths.get("ExtractedImage_1.png");
-                            String img = imgPath.toAbsolutePath().toString();
+                            if (contentType.contains("application/pdf")) {
+                                extractImage.takeImageFromPdf(inputFile);
 
-                            //Image processing.
-                            String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(img);
-                            String finalImage = imageProcess.ImgAfterRemovingBackground(img);
-                            // configfileValue = 0->make the image visible, =1->make the image invisible
-                            CreateSearchableImagePdf createPdf = new CreateSearchableImagePdf(finalImage
-                                    , "./textonly_pdf", "0")
-                            createPdf.textOnlyPdf(finalImage)
+                                String outputFilePath1 = "mergedImgPdf.pdf"
+                                File outputFile1 = new File(generatedFilesPath.toString(), "${outputFilePath1}")
+                                println(outputFile1)
+                                extractImage.MergePdfDocuments(inputFile,"./newFile_pdf_",outputFilePath1);
 
-                            println("getting the size and the location of the image from textonly_pdf")
+                                String outputFilePath2 = "mergedText.pdf"
+                                File outputFile2 = new File(generatedFilesPath.toString(), "${outputFilePath2}")
+                                println(outputFile2)
+                                extractImage.MergePdfDocuments(inputFile,"./ocrDemo_pdf_", outputFilePath2);
+                                /*
+                                extractImage.takeImageFromPdf(filePath.toString())
+                                Path imgPath = Paths.get("ExtractedImage_1.png")
+                                String img = imgPath.toAbsolutePath().toString()
 
-                            Path path = Paths.get("textonly_pdf.pdf")
-                            String ExistingPdfFilePath = path.toAbsolutePath().toString()
-                            String outputFilePath = "newFile.pdf"
-                            File outputFile = new File(generatedFilesPath.toString(), "${outputFilePath}")
-                            println(outputFile)
+                                //Image processing.
+                                String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(img)
+                                String finalImage = imageProcess.ImgAfterRemovingBackground(img)
+                                // configfileValue = 0->make the image visible, =1->make the image invisible
+                                CreateSearchableImagePdf createPdf = new CreateSearchableImagePdf(finalImage
+                                        , "./textonly_pdf", "0")
+                                createPdf.textOnlyPdf(finalImage)
 
-                            imageLocationsAndSize.createPdfWithOriginalImage(ExistingPdfFilePath,
-                                    outputFile.toString(), imageNBorder)
+                                println("getting the size and the location of the image from textonly_pdf")
 
-                            redirect "/show/$outputFilePath"
+                                Path path = Paths.get("textonly_pdf.pdf")
+                                String ExistingPdfFilePath = path.toAbsolutePath().toString()
+                                String outputFilePath = "newFile.pdf"
+                                File outputFile = new File(generatedFilesPath.toString(), "${outputFilePath}")
+                                println(outputFile)
 
-                        }
+                                imageLocationsAndSize.createPdfWithOriginalImage(ExistingPdfFilePath,
+                                        outputFile.toString(), imageNBorder)
 
+                                 */
 
-                         else {
+                                redirect "/show/$outputFilePath1"
 
-                            String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(filePath.toString())
-                            String finalImage = imageProcess.ImgAfterRemovingBackground(filePath.toString())
+                            } else {
 
-                            // configfileValue = 0->make the image visible, =1->make the image invisible
-                            CreateSearchableImagePdf createPdf = new CreateSearchableImagePdf(finalImage
-                                    , "./textonly_pdf", "0")
-                            createPdf.textOnlyPdf(finalImage)
+                                String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(inputFile,1)
+                                String finalImage = imageProcess.ImgAfterRemovingBackground(inputFile,1)
 
-                            println("getting the size and the location of the image from textonly_pdf")
+                                // configfileValue = 0->make the image visible, =1->make the image invisible
+                                CreateSearchableImagePdf createPdf = new CreateSearchableImagePdf(finalImage
+                                        , "./textonly_pdf_1", "0")
+                                createPdf.textOnlyPdf(finalImage,1)
 
-                            Path path = Paths.get("textonly_pdf.pdf")
-                            String ExistingPdfFilePath = path.toAbsolutePath().toString()
-                            String outputFilePath = "newFile.pdf"
-                            File outputFile = new File(generatedFilesPath.toString(), "${outputFilePath}")
-                            println(outputFile)
+                                println("getting the size and the location of the image from textonly_pdf_1")
 
-                            imageLocationsAndSize.createPdfWithOriginalImage(ExistingPdfFilePath,
-                                    outputFile.toString(), imageNBorder)
+                                Path path = Paths.get("textonly_pdf_1.pdf")
+                                String ExistingPdfFilePath = path.toAbsolutePath().toString()
+                                String outputFilePath1 = "newFile_1.pdf"
+                                File outputFile = new File(generatedFilesPath.toString(), "${outputFilePath1}")
+                                println(outputFile)
 
-                            redirect "/show/$outputFilePath"
-                        }
+                                imageLocationsAndSize.createPdfWithOriginalImage(ExistingPdfFilePath,
+                                        outputFile.toString(), imageNBorder)
+
+                                /*
+                                //Extract text from the image.
+                                ImageText ocr = new ImageText(finalImage);
+                                String fulltext = ocr.generateText();
+
+                                System.out.println("Creating pdf document...");
+                                String outputFileTextPath = "textExtracted.pdf"
+                                File outputFileText = new File(generatedFilesPath.toString(), "${outputFileTextPath}")
+                                TextPdf textpdf = new TextPdf(fulltext, outputFileText.toString());
+                                System.out.println("Document created.");
+                                textpdf.generateDocument(fulltext,1);
+                                redirect(outputFileTextPath)
+                                 */
+
+                                redirect "/show/$outputFilePath1"
+                            }
+
 
                 })
             }
-            get(":outputFilePath"){
+            get(":outputFilePath1"){
                 FileService fileService ->
                 parse(Form.class).then({ Form form ->
                     UploadedFile f = form.file("upload")
-                    response.sendFile(fileService.get(pathTokens.outputFilePath, f))
+                    response.sendFile(fileService.get(pathTokens.outputFilePath1, f))
                 })
             }
+
         }
+
+
 /*
         get('file/:id'){
             File filePath = new File("${uploadPath}/${pathTokens['id']}")
@@ -134,14 +169,14 @@ ratpack {
             render Paths.get(filePath.toURI())
         }
 
-        get("show/:outputFilePath"){
-            String fileId = getPathTokens().get("outputFilePath")
+        get("show/:outputFilePath1"){
+            String fileId = getPathTokens().get("outputFilePath1")
             String path = "/file/${fileId}"
             render( thymeleafTemplate("pdf", ['fullpath': path]) )
 
         }
         get("appear/:name"){
-            String fileId = getPathTokens().get("outputFilePath")
+            String fileId = getPathTokens().get("outputFilePath1")
             String path = "/file/${fileId}"
             render( thymeleafTemplate("photo", ['fullpath': path]) )
         }

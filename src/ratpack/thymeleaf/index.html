@@ -43,7 +43,7 @@
     <input class = "file-upload__button" name = "upload" type = "file" id ='file'><br>
 
     <label>please Choose one of these options:</label>
-    <select th:field="*{options}">
+    <select id = options >
         <option th:value="'SearchablePDF'" th:text="${pdf}"></option>
         <option th:value="'Textoverlay'" th:text="${text}" th:selected="${text}"></option>
     </select>
@@ -51,6 +51,20 @@
     <input type = "submit" value=" Start OCR">
 </form>
 
+
+<p> The value of the option selected is:
+    <span class="output"></span>
+</p>
+
+<button onclick="getOption()">Check option</button>
+<script type="text/javascript">
+
+    function getOption() {
+        selectElement = document.querySelector('#options');
+        output = selectElement.options[selectElement.selectedIndex].value;
+        document.querySelector('.output').textContent = output;
+    }
+    </script>
 
 </body>
 

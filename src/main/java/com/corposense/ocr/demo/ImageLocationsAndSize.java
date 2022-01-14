@@ -1,5 +1,6 @@
 package com.corposense.ocr.demo;
 
+import com.google.inject.Inject;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -33,7 +34,7 @@ public class ImageLocationsAndSize extends PDFStreamEngine{
         /**
 	     * @throws IOException If there is an error loading text stripper properties.
 	     */ 
-	 
+	 @Inject
     public ImageLocationsAndSize() throws IOException
     {
         // preparing PDFStreamEngine
