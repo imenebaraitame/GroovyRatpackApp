@@ -57,6 +57,8 @@ ratpack {
                 FileService fileService->
                     parse(Form.class).then({ Form form ->
                         UploadedFile f = form.file("upload")
+                        String options = form.get('options')
+                        println(options)
                         String name = fileService.save(f, uploadPath.toString())
                         String contentType = context.get(MimeTypes).getContentType(name)
                         File filePath = new File("${uploadPath}/${name}")
@@ -70,13 +72,6 @@ ratpack {
                                 println(outputFile1)
                                 extractImage.MergePdfDocuments(inputFile,"./newFile_pdf_", outputFile1.toString());
 
-                                /*
-                                String outputFilePath2 = "mergedText.pdf"
-                                File outputFile2 = new File(generatedFilesPath.toString(), "${outputFilePath2}")
-                                println(outputFile2)
-                                extractImage.MergePdfDocuments(inputFile,"./ocrDemo_pdf_",outputFile2.toString());
-
-                                 */
 
 
                                 redirect "/show/$outputFilePath1"
@@ -102,24 +97,8 @@ ratpack {
                                 imageLocationsAndSize.createPdfWithOriginalImage(ExistingPdfFilePath,
                                         outputFile.toString(), imageNBorder)
 
-                                /*
-                                //Extract text from the image.
-                                ImageText ocr = new ImageText(finalImage);
-                                String fulltext = ocr.generateText();
-
-                                System.out.println("Creating pdf document...");
-                                String outputFileTextPath = "textExtracted.pdf"
-                                File outputFileText = new File(generatedFilesPath.toString(), "${outputFileTextPath}")
-                                TextPdf textpdf = new TextPdf(fulltext, outputFileText.toString());
-                                System.out.println("Document created.");
-                                textpdf.generateDocument(fulltext,1);
-                                redirect(outputFileTextPath)
-                                 */
-
                                 redirect "/show/$outputFilePath1"
                             }
-
-
                 })
             }
             get(":outputFilePath1"){

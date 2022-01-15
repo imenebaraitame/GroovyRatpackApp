@@ -35,20 +35,20 @@
 </head>
 
 <body>
-<h1 class = "title">Send me a file!</h1>
+<h1 class="title">Send me a file!</h1>
 
 <form action="/upload" method="POST" enctype="multipart/form-data">
 
     <lable>Upload image or PDF file (.png,.jpg, or .PDF)</lable>
-    <input class = "file-upload__button" name = "upload" type = "file" id ='file'><br>
+    <input class="file-upload__button" name="upload" type="file" id ='upload'><br>
 
     <label>please Choose one of these options:</label>
-    <select id = options >
+    <select id="options" name="options" >
         <option th:value="'SearchablePDF'" th:text="${pdf}"></option>
         <option th:value="'Textoverlay'" th:text="${text}" th:selected="${text}"></option>
     </select>
 
-    <input type = "submit" value=" Start OCR">
+    <input type="submit" value=" Start OCR">
 </form>
 
 
@@ -57,12 +57,12 @@
 </p>
 
 <button onclick="getOption()">Check option</button>
-<script type="text/javascript">
 
+<script type="text/javascript">
     function getOption() {
-        selectElement = document.querySelector('#options');
-        output = selectElement.options[selectElement.selectedIndex].value;
-        document.querySelector('.output').textContent = output;
+        selectElement=document.querySelector('#options');
+        output=selectElement.options[selectElement.selectedIndex].value;
+        document.querySelector('.output').textContent=output;
     }
     </script>
 
