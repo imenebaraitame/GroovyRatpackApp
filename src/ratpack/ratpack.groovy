@@ -1,68 +1,157 @@
-import app.model.PhotoService
-import app.services.DefaultPhotoService
+import app.model.FileService
+import app.services.DefaultFileService
+import com.corposense.ocr.demo.CreateSearchableImagePdf
+import com.corposense.ocr.demo.extractImage
+import com.corposense.ocr.demo.ImageLocationsAndSize
+import com.corposense.ocr.demo.ImageProcess
+import com.corposense.ocr.demo.ImageText
+import com.corposense.ocr.demo.TextPdf
+import com.corposense.ocr.demo.Utils
+
 import ratpack.form.Form
+import ratpack.form.UploadedFile
 import ratpack.thymeleaf3.ThymeleafModule
+
+import java.nio.file.Path
+
 import static ratpack.thymeleaf3.Template.thymeleafTemplate
 import static ratpack.groovy.Groovy.ratpack
 import ratpack.server.BaseDir
 import java.nio.file.Paths
+import ratpack.file.MimeTypes
 
-def uploadDir = 'uploads'
-def publicDir = 'public'
-def baseDir = BaseDir.find("${publicDir}/${uploadDir}")
+String uploadDir = 'uploads'
+String publicDir = 'public'
+String generatedFilesDir = "generatedFiles"
+
+Path baseDir = BaseDir.find("${publicDir}/${uploadDir}")
+Path baseGeneratedFilesDir = BaseDir.find("${publicDir}/${generatedFilesDir}")
 //def baseDir = BaseDir.findBaseDir()
 //def baseDir = BaseDir.find(".")
 
-def uploadPath = baseDir.resolve(uploadDir)
+Path generatedFilesPath = baseGeneratedFilesDir.resolve(generatedFilesDir)
+Path uploadPath = baseDir.resolve(uploadDir)
 //def uploadPath = baseDir.getRoot().resolve(uploadDir)
 //def uploadPath = baseDir.getRoot().resolve("${publicDir}/${uploadDir}")
-
 
 ratpack {
     bindings {
         module (ThymeleafModule)
-        bind (PhotoService, DefaultPhotoService)
+        bind (FileService, DefaultFileService)
+        bind(ImageLocationsAndSize)
+        bind(Utils)
+        bind(CreateSearchableImagePdf)
+        bind(ImageProcess)
+        bind(extractImage)
+        bind(ImageText)
+        bind(TextPdf)
     }
     handlers {
-        prefix("photo"){
+        prefix("upload"){
             post {
-                PhotoService photoService ->
-                    parse(Form.class).then({ def form ->
-                    def f = form.file("photo")
-                    def name = photoService.save(f, uploadPath.toString())
-                    String suffix = photoService.getSuffix(f)
-                    redirect "/show/$name/$suffix"
+                CreateSearchableImagePdf createSearchableImagePdf,
+                ImageLocationsAndSize imageLocationsAndSize, ImageProcess imageProcess,
+                extractImage extractImage,
+                ImageText imagetext,
+                TextPdf textPdf,
+                FileService fileService->
+                    parse(Form.class).then({ Form form ->
+                        UploadedFile f = form.file("upload")
+                        String options = form.get('options')
+                        println(options)
+                        String name = fileService.save(f, uploadPath.toString())
+                        String contentType = context.get(MimeTypes).getContentType(name)
+                        File filePath = new File("${uploadPath}/${name}")
+                        String inputFile = filePath.toString()
+
+                            if (contentType.contains("application/pdf")) {
+                                extractImage.takeImageFromPdf(inputFile);
+
+                                String outputFilePath1 = "mergedImgPdf.pdf"
+                                File outputFile1 = new File(generatedFilesPath.toString(), "${outputFilePath1}")
+                                println(outputFile1)
+                                extractImage.MergePdfDocuments(inputFile,"./newFile_pdf_", outputFile1.toString());
+
+
+
+                                redirect "/show/$outputFilePath1"
+
+                            } else {
+
+                                String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(inputFile,1)
+                                String finalImage = imageProcess.ImgAfterRemovingBackground(inputFile,1)
+
+                                // configfileValue = 0->make the image visible, =1->make the image invisible
+                                CreateSearchableImagePdf createPdf = new CreateSearchableImagePdf(finalImage
+                                        , "./textonly_pdf_", "0")
+                                createPdf.textOnlyPdf(finalImage,1)
+
+                                println("getting the size and the location of the image from textonly_pdf_1")
+
+                                Path path = Paths.get("textonly_pdf_1.pdf")
+                                String ExistingPdfFilePath = path.toAbsolutePath().toString()
+                                String outputFilePath1 = "newFile_1.pdf"
+                                File outputFile = new File(generatedFilesPath.toString(), "${outputFilePath1}")
+                                println(outputFile)
+
+                                imageLocationsAndSize.createPdfWithOriginalImage(ExistingPdfFilePath,
+                                        outputFile.toString(), imageNBorder)
+
+                                redirect "/show/$outputFilePath1"
+                            }
                 })
             }
-            get(":name"){
-               PhotoService photoService ->
-                parse(Form.class).then({ def form ->
-                    def f = form.file("photo")
-                    response.sendFile(photoService.get(pathTokens.name, f))
+            get(":outputFilePath1"){
+                FileService fileService ->
+                parse(Form.class).then({ Form form ->
+                    UploadedFile f = form.file("upload")
+                    response.sendFile(fileService.get(pathTokens.outputFilePath1, f))
                 })
             }
+
         }
 
-        get('image/:id'){
-            def imagePath = new File("${uploadPath}/${pathTokens['id']}")
-            // you'd better check if the image exists...
-            println("imagePath: ${imagePath}, exists: ${imagePath.exists()}")
-            render Paths.get(imagePath.toURI())
+
+/*
+        get('file/:id'){
+            File filePath = new File("${uploadPath}/${pathTokens['id']}")
+            // you'd better check if the file exists...
+            println("filePath: ${filePath}, exists: ${filePath.exists()}")
+            render Paths.get(filePath.toURI())
+        }
+*/
+        get('file/:id'){
+            File filePath = new File("${generatedFilesPath}/${pathTokens['id']}")
+            // you'd better check if the file exists...
+            println("filePath: ${filePath}, exists: ${filePath.exists()}")
+            render Paths.get(filePath.toURI())
         }
 
-        get("show/:name/:suffix"){
-            String fileId = getPathTokens().get("name")
-            String SU = getPathTokens().get("suffix")
-            String path = "/image/${fileId}${SU}"
+        get("show/:outputFilePath1"){
+            String fileId = getPathTokens().get("outputFilePath1")
+            String path = "/file/${fileId}"
+            render( thymeleafTemplate("pdf", ['fullpath': path]) )
 
-            if (SU in [".jpg", ".jpeg", ".png"]) {                
-                render( thymeleafTemplate("photo", ['fullpath': path]) )
-            } else{
-                render( thymeleafTemplate("pdf", ['fullpath': path]) )
-            }
+        }
+        get("appear/:name"){
+            String fileId = getPathTokens().get("outputFilePath1")
+            String path = "/file/${fileId}"
+            render( thymeleafTemplate("photo", ['fullpath': path]) )
         }
 
-        files { dir "public" indexFiles 'index.html' }
+        get{
+            String SearchablePDF = "Create a searchable pdf with invisible text layer"
+            String Textoverlay = "Just extract and show overlay"
+           def options = ['pdf':SearchablePDF,'text':Textoverlay ]
+            render(thymeleafTemplate("index",options))
+        }
+
+
+
+
+
+
 
     }
 }
+

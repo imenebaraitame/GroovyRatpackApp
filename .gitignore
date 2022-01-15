@@ -5,6 +5,15 @@
 !src/**/build/
 gradle/
 gradlew*
+src/ratpack/public/uploads/
+src/ratpack/public/generatedFiles/
+public/uploads/
+public/generatedFiles/
+*.png
+*.jpeg
+*.jpg
+*.pdf
+
 
 # Ignore Gradle GUI config
 gradle-app.setting

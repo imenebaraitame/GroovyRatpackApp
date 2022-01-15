@@ -1,13 +1,24 @@
+image:
+  file: .gitpod.Dockerfile
+
 ports:
   - port: 5050
     onOpen: open-preview
     # onOpen: open-browser
 
 tasks:
+  - before: >
+        source ~/.bashrc
+    init: >
+        convert --version
+        tesseract --version
   - init: |
       sudo mkdir -p public/uploads
       sudo mkdir -p src/ratpack/public/uploads
+      sudo mkdir -p public/generatedFiles
+      sudo mkdir -p src/ratpack/public/generatedFiles
       sudo chmod 777 -R public/uploads
+      sudo chmod 777 -R public/generatedFiles
     command: |
       gradle shadowJar
       java -jar build/libs/GroovyRatpackApp.jar 

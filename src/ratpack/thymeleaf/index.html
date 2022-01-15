@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html   xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+    <style>
+    .file-upload__button{
+       background-color: white;
+       position:left;
+       color: dimgray;
+       border: 3px solid #e7e7e7;
+       border-radius: 5px;
+       padding: 9px 100px;
+    }
+
+    .file-upload__button:hover {
+       background-color: #e7e7e7;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      color: DimGrey;
+      margin-left: 30px;
+    }
+    h1.title{
+      color:black;
+      margin-left: 30px;
+    }
+   </style>
+
+</head>
+
+<body>
+<h1 class="title">Send me a file!</h1>
+
+<form action="/upload" method="POST" enctype="multipart/form-data">
+
+    <lable>Upload image or PDF file (.png,.jpg, or .PDF)</lable>
+    <input class="file-upload__button" name="upload" type="file" id ='upload'><br>
+
+    <label>please Choose one of these options:</label>
+    <select id="options" name="options" >
+        <option th:value="'SearchablePDF'" th:text="${pdf}"></option>
+        <option th:value="'Textoverlay'" th:text="${text}" th:selected="${text}"></option>
+    </select>
+
+    <input type="submit" value=" Start OCR">
+</form>
+
+
+<p> The value of the option selected is:
+    <span class="output"></span>
+</p>
+
+<button onclick="getOption()">Check option</button>
+
+<script type="text/javascript">
+    function getOption() {
+        selectElement=document.querySelector('#options');
+        output=selectElement.options[selectElement.selectedIndex].value;
+        document.querySelector('.output').textContent=output;
+    }
+    </script>
+
+</body>
+
+</html>
