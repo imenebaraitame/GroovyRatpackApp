@@ -21,13 +21,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class extractImage extends PDFStreamEngine {
+public class ExtractImage extends PDFStreamEngine {
 
     @Inject
-    public extractImage() throws IOException {
+    public ExtractImage() throws IOException {
     }
 
-    public int imageNumber = 1;
+    private int imageNumber = 1;
 
 
     @Override
@@ -45,19 +45,21 @@ public class extractImage extends PDFStreamEngine {
                 File file = new File(pathName);
                 ImageIO.write(bImage, "PNG", file);
                 System.out.println("Image saved.");
-
+/*
                 try {
                     String imageNBorder = ImageProcess.ImgAfterDeskewingWithoutBorder(pathName, imageNumber);
                     String finalImage = ImageProcess.ImgAfterRemovingBackground(pathName, imageNumber);
 
                     // configfileValue = 0->make the image visible, =1->make the image invisible
-                    CreateSearchableImagePdf createPdf = new CreateSearchableImagePdf
+                    SearchableImagePdf createPdf = new SearchableImagePdf
                             (finalImage, "./textonly_pdf_", "0");
                     createPdf.textOnlyPdf(finalImage, imageNumber);
 
                     ImageLocationsAndSize.createPdfWithOriginalImage("./textonly_pdf_" + imageNumber + ".pdf",
                             "./newFile_pdf_" + imageNumber + ".pdf", imageNBorder);
 
+ */
+/*
                     //Extract text from the image.
                     ImageText ocr = new ImageText(finalImage);
                     String fulltext = ocr.generateText();
@@ -67,11 +69,15 @@ public class extractImage extends PDFStreamEngine {
                     System.out.println("Document "+ imageNumber +" created.");
                     textpdf.generateDocument(fulltext,imageNumber);
 
-                    imageNumber++;
+ */
 
+                    imageNumber++;
+/*
                 } catch (DocumentException | IM4JavaException | InterruptedException e) {
                     e.printStackTrace();
                 }
+
+ */
             }else if (xobject instanceof PDFormXObject) {
                 PDFormXObject form = (PDFormXObject) xobject;
                 showForm(form);
@@ -82,12 +88,13 @@ public class extractImage extends PDFStreamEngine {
 
     }
 
+
    public static void takeImageFromPdf (String fileName) throws IOException {
 	   PDDocument document = null;
        try
        {
            document = PDDocument.load( new File(fileName) );
-           extractImage printer = new extractImage();
+           ExtractImage printer = new ExtractImage();
            int pageNum = 0;
            for( PDPage page : document.getPages() )
            {
@@ -105,7 +112,17 @@ public class extractImage extends PDFStreamEngine {
        }
    }
 
-    public static void MergePdfDocuments(String fileName, String inputFile, String outputFile) throws IOException {
+   public static int pdfPageNumber(String fileName) throws IOException {
+
+       PDDocument doc = PDDocument.load(new File(fileName));
+       int pageNum = doc.getNumberOfPages();
+       System.out.println(pageNum);
+       doc.close();
+       return pageNum;
+   }
+
+
+   public static void mergePdfDocuments(String fileName, String inputFile, String outputFile) throws IOException {
 
         //Loading an existing PDF document
         //Create PDFMergerUtility class object
@@ -133,7 +150,9 @@ public class extractImage extends PDFStreamEngine {
             System.out.println("PDF Documents merged to a single file successfully");
 
             //Close documents
+            document.close();
             document1.close();
+
         }
     }
 
