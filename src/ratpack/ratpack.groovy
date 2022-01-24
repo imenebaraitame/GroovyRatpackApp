@@ -76,7 +76,8 @@ ratpack {
                                     extractImage.mergePdfDocuments(inputFile, "./newFile_pdf_", outputFile1.toString())
                                     redirect "/show/$outputFilePath/$name"
 
-                                }else{
+                                }
+                                if(options == "Textoverlay"){
                                     int pageNum = ExtractImage.pdfPageNumber(inputFile)
                                     extractImage.takeImageFromPdf(inputFile)
                                     TextPdf.createTextOverlay(inputFile, pageNum)
@@ -87,7 +88,8 @@ ratpack {
                                     redirect "/show/$outputFilePath/$name"
                                 }
 
-                            }else {
+                            }
+                             if (contentType.contains("image/jpeg") || contentType.contains("image/png") ) {
                                 if (options == "SearchablePDF") {
                                     String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(inputFile, 1)
                                     String finalImage = imageProcess.ImgAfterRemovingBackground(inputFile, 1)
@@ -110,7 +112,8 @@ ratpack {
                                             outputFile.toString(), imageNBorder)
 
                                     redirect "/appear/$outputFilePath/$name"
-                                }else{
+                                }
+                                 if(options == "Textoverlay"){
                                     String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(inputFile, 1)
                                     String finalImage = imageProcess.ImgAfterRemovingBackground(inputFile, 1)
                                     //Extract text from the image.
