@@ -5,10 +5,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <!--<link rel="shortcut icon" th:href="@{/images/favicon.ico}">-->
 
 </head>
 <body>
-    <h1>Path: <h1 th:text="${fullpath}" /></h1>
+    <h1>Path: <h1 th:text="${fullpath2}" /></h1>
 
     <div align="left" style="width: 50%;float: left;">
         <img src="https://via.placeholder.com/150.png" th:src="@{${fullpath}}" />
@@ -17,6 +18,7 @@
     <div align="right" style="width: 50%;float: right;">
         <embed th:src="${fullpath2}" type="application/pdf" width="100%" height="500px" />
     </div>
+
 
 
     <p>Back to <a href="/">Home</a></p>

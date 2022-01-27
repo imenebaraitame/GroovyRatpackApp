@@ -185,7 +185,7 @@ ratpack {
         get{
             String SearchablePDF = "Create a searchable pdf with invisible text layer"
             String Textoverlay = "Just extract and show overlay"
-           def options = ['pdf':SearchablePDF,'text':Textoverlay ]
+            LinkedHashMap options = ['pdf':SearchablePDF,'text':Textoverlay ]
             render(thymeleafTemplate("index",options))
         }
 
