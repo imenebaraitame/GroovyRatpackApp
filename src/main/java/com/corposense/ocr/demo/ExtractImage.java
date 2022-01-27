@@ -45,39 +45,9 @@ public class ExtractImage extends PDFStreamEngine {
                 File file = new File(pathName);
                 ImageIO.write(bImage, "PNG", file);
                 System.out.println("Image saved.");
-/*
-                try {
-                    String imageNBorder = ImageProcess.ImgAfterDeskewingWithoutBorder(pathName, imageNumber);
-                    String finalImage = ImageProcess.ImgAfterRemovingBackground(pathName, imageNumber);
-
-                    // configfileValue = 0->make the image visible, =1->make the image invisible
-                    SearchableImagePdf createPdf = new SearchableImagePdf
-                            (finalImage, "./textonly_pdf_", "0");
-                    createPdf.textOnlyPdf(finalImage, imageNumber);
-
-                    ImageLocationsAndSize.createPdfWithOriginalImage("./textonly_pdf_" + imageNumber + ".pdf",
-                            "./newFile_pdf_" + imageNumber + ".pdf", imageNBorder);
-
- */
-/*
-                    //Extract text from the image.
-                    ImageText ocr = new ImageText(finalImage);
-                    String fulltext = ocr.generateText();
-
-                    System.out.println("Creating pdf document...");
-                    TextPdf textpdf = new TextPdf(fulltext, "./ocrDemo_pdf_" + imageNumber + ".pdf");
-                    System.out.println("Document "+ imageNumber +" created.");
-                    textpdf.generateDocument(fulltext,imageNumber);
-
- */
 
                     imageNumber++;
-/*
-                } catch (DocumentException | IM4JavaException | InterruptedException e) {
-                    e.printStackTrace();
-                }
 
- */
             }else if (xobject instanceof PDFormXObject) {
                 PDFormXObject form = (PDFormXObject) xobject;
                 showForm(form);
