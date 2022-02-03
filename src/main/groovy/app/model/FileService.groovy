@@ -36,5 +36,12 @@ interface FileService {
      */
 
     String getSuffix(UploadedFile f)
-   
+
+    /**
+     * check wther the uploaded file is image or not
+     *
+     * @param f
+     */
+    Boolean isPdfFile(UploadedFile f)
+
 }

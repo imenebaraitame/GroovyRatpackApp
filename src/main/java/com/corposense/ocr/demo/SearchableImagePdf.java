@@ -6,7 +6,9 @@ import com.itextpdf.text.DocumentException;
 import net.sourceforge.tess4j.ITesseract.RenderedFormat;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+
 import org.im4java.core.IM4JavaException;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class SearchableImagePdf {
 
 	}
 
-	public static void createSearchablePdf(String inputFile, int pageNum) throws IOException, InterruptedException,
+	public static void createSearchablePdf( int pageNum) throws IOException, InterruptedException,
 			                                                 IM4JavaException, DocumentException {
 
 		for (int i = 1; i <= pageNum; i++) {
@@ -60,6 +62,24 @@ public class SearchableImagePdf {
 					"./newFile_pdf_" + i + ".pdf", imageNBorder);
 		}
 	}
+	/*
+	public static void extractFonts(String inputFile) throws IOException {
+		PDDocument doc = PDDocument.load(new File(inputFile));
+		for (int i = 0; i < doc.getNumberOfPages(); ++i)
+		{
+			PDPage page = doc.getPage(i);
+			PDResources res = page.getResources();
+			for (COSName fontName : res.getFontNames())
+			{
+				PDFont font = res.getFont(fontName);
+				boolean isEmbedded = font.isEmbedded();
+				System.out.println("the file has fonts:" +isEmbedded);
+			}
+		}
+	}
+
+	 */
+
 		
 	
 	

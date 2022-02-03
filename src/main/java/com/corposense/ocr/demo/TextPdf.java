@@ -39,7 +39,7 @@ public class TextPdf {
         document.close();
     }
 
-    public static void createTextOverlay(String inputFile, int pageNum) throws DocumentException,
+    public static void createTextOverlay(int pageNum) throws DocumentException,
             IOException, InterruptedException, IM4JavaException {
         for( int i = 1 ; i <= pageNum; i++){
             String extractedImgName = "ExtractedImage_" + i + ".png";

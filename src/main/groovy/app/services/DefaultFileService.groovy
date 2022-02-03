@@ -39,6 +39,11 @@ class DefaultFileService implements FileService {
         return f.getFileName().substring(dot)
     }
 
+    @Override
+    Boolean isPdfFile( UploadedFile file ) {
+        file.contentType.type.contains( "application/pdf" )
+    }
+
     private static String getFileName(String name,UploadedFile f) {
        return "${prefix}${name}"
     }

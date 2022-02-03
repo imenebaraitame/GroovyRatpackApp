@@ -1,10 +1,13 @@
 import app.model.FileService
 import app.services.DefaultFileService
+import com.corposense.ocr.demo.PdfCombiner
 import com.corposense.ocr.demo.SearchableImagePdf
 import com.corposense.ocr.demo.ExtractImage
 import com.corposense.ocr.demo.ImageLocationsAndSize
 import com.corposense.ocr.demo.ImageProcess
 import com.corposense.ocr.demo.ImageText
+import com.corposense.ocr.demo.PdfConverter
+
 import com.corposense.ocr.demo.TextPdf
 import com.corposense.ocr.demo.Utils
 
@@ -18,7 +21,7 @@ import static ratpack.thymeleaf3.Template.thymeleafTemplate
 import static ratpack.groovy.Groovy.ratpack
 import ratpack.server.BaseDir
 import java.nio.file.Paths
-import ratpack.file.MimeTypes
+
 
 String uploadDir = 'uploads'
 String publicDir = 'public'
@@ -35,6 +38,12 @@ Path uploadPath = baseDir.resolve(uploadDir)
 //def uploadPath = baseDir.getRoot().resolve("${publicDir}/${uploadDir}")
 
 ratpack {
+    serverConfig {
+        props("application.properties")
+        development(true)
+        maxContentLength(26214400)
+
+    }
     bindings {
         module(ThymeleafModule)
         bind(FileService, DefaultFileService)
@@ -45,6 +54,9 @@ ratpack {
         bind(ExtractImage)
         bind(ImageText)
         bind(TextPdf)
+        bind(PdfConverter)
+        bind(PdfCombiner)
+
     }
     handlers {
         prefix("upload"){
@@ -54,42 +66,37 @@ ratpack {
                 ExtractImage extractImage,
                 ImageText imagetext,
                 TextPdf textPdf,
+                PdfConverter pdfConverter,
+                PdfCombiner pdfCombiner,
                 FileService fileService->
                     parse(Form.class).then({ Form form ->
                         UploadedFile f = form.file("upload")
                         String options = form.get('options')
 
                         String name = fileService.save(f, uploadPath.toString())
-                        String contentType = context.get(MimeTypes).getContentType(name)
                         File filePath = new File("${uploadPath}/${name}")
                         String inputFile = filePath.toString()
 
-
-                            if (contentType.contains("application/pdf")) {
+                              if (fileService.isPdfFile(f)) {
                                 if (options == "SearchablePDF") {
-                                    int pageNum = ExtractImage.pdfPageNumber(inputFile)
-                                    extractImage.takeImageFromPdf(inputFile)
-                                    searchableImagePdf.createSearchablePdf(inputFile,pageNum)
-
+                                    pdfConverter.produceSearchablePdf(inputFile)
                                     String outputFilePath = "mergedImgPdf.pdf"
-                                    File outputFile1 = new File(generatedFilesPath.toString(), "${outputFilePath}")
-                                    extractImage.mergePdfDocuments(inputFile, "./newFile_pdf_", outputFile1.toString())
+                                    File mergedFiles = new File(generatedFilesPath.toString(), "${outputFilePath}")
+                                    PdfCombiner.mergePdfDocuments( inputFile,"./newFile_pdf_", mergedFiles.toString())
+
                                     redirect "/show/$outputFilePath/$name"
 
                                 }
                                 if(options == "Textoverlay"){
-                                    int pageNum = ExtractImage.pdfPageNumber(inputFile)
-                                    extractImage.takeImageFromPdf(inputFile)
-                                    TextPdf.createTextOverlay(inputFile, pageNum)
+                                    pdfConverter.produceTextOverlay(inputFile)
                                     String outputFilePath = "mergedText.pdf"
                                     File outputFile1 = new File(generatedFilesPath.toString(), "${outputFilePath}")
-                                    extractImage.mergePdfDocuments(inputFile, "./ocrDemo_pdf_", outputFile1.toString())
+                                    PdfCombiner.mergePdfDocuments(inputFile, "./ocrDemo_pdf_", outputFile1.toString())
 
                                     redirect "/show/$outputFilePath/$name"
                                 }
 
-                            }
-                             if (contentType.contains("image/jpeg") || contentType.contains("image/png") ) {
+                            }else{
                                 if (options == "SearchablePDF") {
                                     String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(inputFile, 1)
                                     String finalImage = imageProcess.ImgAfterRemovingBackground(inputFile, 1)

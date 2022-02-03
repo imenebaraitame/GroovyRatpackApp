@@ -2,7 +2,7 @@ package com.corposense.ocr.demo;
 
 
 import com.google.inject.Inject;
-import com.itextpdf.text.DocumentException;
+
 import org.apache.pdfbox.contentstream.PDFStreamEngine;
 import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.cos.COSBase;
@@ -13,7 +13,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.im4java.core.IM4JavaException;
+
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -24,7 +24,7 @@ import java.util.List;
 public class ExtractImage extends PDFStreamEngine {
 
     @Inject
-    public ExtractImage() throws IOException {
+    public ExtractImage(){
     }
 
     private int imageNumber = 1;
@@ -61,8 +61,7 @@ public class ExtractImage extends PDFStreamEngine {
 
    public static void takeImageFromPdf (String fileName) throws IOException {
 	   PDDocument document = null;
-       try
-       {
+       try {
            document = PDDocument.load( new File(fileName) );
            ExtractImage printer = new ExtractImage();
            int pageNum = 0;
@@ -82,49 +81,16 @@ public class ExtractImage extends PDFStreamEngine {
        }
    }
 
-   public static int pdfPageNumber(String fileName) throws IOException {
+   public static int countImage(String fileName) throws IOException {
 
        PDDocument doc = PDDocument.load(new File(fileName));
        int pageNum = doc.getNumberOfPages();
-       System.out.println(pageNum);
        doc.close();
        return pageNum;
    }
 
 
-   public static void mergePdfDocuments(String fileName, String inputFile, String outputFile) throws IOException {
 
-        //Loading an existing PDF document
-        //Create PDFMergerUtility class object
-        PDFMergerUtility PDFmerger = new PDFMergerUtility();
-        PDDocument document = null;
-
-        //use the input fileName to get the number of pages
-        document = PDDocument.load(new File(fileName));
-
-        //Setting the destination file path
-        PDFmerger.setDestinationFileName(outputFile);
-        int pageNum = 0;
-        for (PDPage Page : document.getPages()) {
-
-            pageNum++;
-            File file1 = new File(inputFile + pageNum + ".pdf");
-            PDDocument document1 = PDDocument.load(file1);
-
-            //adding the source files
-            PDFmerger.addSource(file1);
-
-            //Merging the documents
-            PDFmerger.mergeDocuments(null);
-
-            System.out.println("PDF Documents merged to a single file successfully");
-
-            //Close documents
-            document.close();
-            document1.close();
-
-        }
-    }
 
 
 
