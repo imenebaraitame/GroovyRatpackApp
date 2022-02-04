@@ -50,8 +50,8 @@ public class SearchableImagePdf {
 
 		for (int i = 1; i <= pageNum; i++) {
 			String extractedImgName = "ExtractedImage_" + i + ".png";
-			String imageNBorder = ImageProcess.ImgAfterDeskewingWithoutBorder(extractedImgName, i);
-			String finalImage = ImageProcess.ImgAfterRemovingBackground(extractedImgName, i);
+			String imageNBorder = ImageProcessing.ImgAfterDeskewingWithoutBorder(extractedImgName, i);
+			String finalImage = ImageProcessing.ImgAfterRemovingBackground(extractedImgName, i);
 
 			// configfileValue = 0->make the image visible, =1->make the image invisible
 			SearchableImagePdf createPdf = new SearchableImagePdf

@@ -23,14 +23,13 @@ class DefaultFileService implements FileService {
 
         f.writeTo(outputFile.newOutputStream())
         println("outputFile: ${outputFile.path}, Exists: ${outputFile.exists()}")
-        return fileId
 
+        return fileId
     }
 
-
     @Override
-    Path get(String name,UploadedFile f) {
-        tmpDir.resolve getFileName(name,f)
+    Path get(String name) {
+        tmpDir.resolve getFileName(name)
     }
 
     @Override
@@ -44,7 +43,7 @@ class DefaultFileService implements FileService {
         file.contentType.type.contains( "application/pdf" )
     }
 
-    private static String getFileName(String name,UploadedFile f) {
+    private static String getFileName(String name) {
        return "${prefix}${name}"
     }
 

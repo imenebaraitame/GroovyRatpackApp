@@ -43,8 +43,8 @@ public class TextPdf {
             IOException, InterruptedException, IM4JavaException {
         for( int i = 1 ; i <= pageNum; i++){
             String extractedImgName = "ExtractedImage_" + i + ".png";
-            String imageNBorder = ImageProcess.ImgAfterDeskewingWithoutBorder(extractedImgName, i);
-            String finalImage = ImageProcess.ImgAfterRemovingBackground(extractedImgName, i);
+            String imageNBorder = ImageProcessing.ImgAfterDeskewingWithoutBorder(extractedImgName, i);
+            String finalImage = ImageProcessing.ImgAfterRemovingBackground(extractedImgName, i);
             //Extract text from the image.
             ImageText ocr = new ImageText(finalImage);
             String fulltext = ocr.generateText();

@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class ImageProcess {
+public class ImageProcessing {
 
 	public static final String IMAGE_MAGICK_PATH;
 	public static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
@@ -30,7 +30,7 @@ public class ImageProcess {
 
 	
 @Inject
-	public ImageProcess(String imagePath) {
+	public ImageProcessing(String imagePath) {
 		this.imagePath = imagePath;
 
 	}
@@ -134,7 +134,7 @@ public class ImageProcess {
     public static String ImgAfterDeskewingWithoutBorder(String imagePath , int number)
      		     throws IOException, InterruptedException, IM4JavaException {
     	
-    	ImageProcess image = new ImageProcess(imagePath);
+    	ImageProcessing image = new ImageProcessing(imagePath);
 		String imageDeskew = image.deskewImage(imagePath, number);
 		String imageNBorder = image.removeBorder(imageDeskew,number);
 
@@ -144,8 +144,8 @@ public class ImageProcess {
     public static String ImgAfterRemovingBackground(String imagePath,  int number)
 			throws IOException, InterruptedException, IM4JavaException {
     	
-    	ImageProcess image = new ImageProcess(imagePath );
-    	String imageNBorder = ImageProcess.ImgAfterDeskewingWithoutBorder(imagePath, number);
+    	ImageProcessing image = new ImageProcessing(imagePath );
+    	String imageNBorder = ImageProcessing.ImgAfterDeskewingWithoutBorder(imagePath, number);
     	String binaryInv = image.binaryInverse(imageNBorder, number);
 		String finalImage = image.imageTransparent(imageNBorder,binaryInv, number);
 		

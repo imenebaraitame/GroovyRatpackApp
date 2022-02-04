@@ -1,10 +1,11 @@
 import app.model.FileService
 import app.services.DefaultFileService
+import com.corposense.ocr.demo.ImageConverter
 import com.corposense.ocr.demo.PdfCombiner
 import com.corposense.ocr.demo.SearchableImagePdf
 import com.corposense.ocr.demo.ExtractImage
 import com.corposense.ocr.demo.ImageLocationsAndSize
-import com.corposense.ocr.demo.ImageProcess
+import com.corposense.ocr.demo.ImageProcessing
 import com.corposense.ocr.demo.ImageText
 import com.corposense.ocr.demo.PdfConverter
 
@@ -50,25 +51,28 @@ ratpack {
         bind(ImageLocationsAndSize)
         bind(Utils)
         bind(SearchableImagePdf)
-        bind(ImageProcess)
+        bind(ImageProcessing)
         bind(ExtractImage)
         bind(ImageText)
         bind(TextPdf)
         bind(PdfConverter)
         bind(PdfCombiner)
+        bind(ImageConverter)
 
     }
     handlers {
         prefix("upload"){
             post {
                 SearchableImagePdf searchableImagePdf,
-                ImageLocationsAndSize imageLocationsAndSize, ImageProcess imageProcess,
+                ImageLocationsAndSize imageLocationsAndSize, ImageProcessing imageProcess,
                 ExtractImage extractImage,
                 ImageText imagetext,
                 TextPdf textPdf,
                 PdfConverter pdfConverter,
                 PdfCombiner pdfCombiner,
+                ImageConverter imageConverter,
                 FileService fileService->
+
                     parse(Form.class).then({ Form form ->
                         UploadedFile f = form.file("upload")
                         String options = form.get('options')
@@ -98,22 +102,11 @@ ratpack {
 
                             }else{
                                 if (options == "SearchablePDF") {
-                                    String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(inputFile, 1)
-                                    String finalImage = imageProcess.ImgAfterRemovingBackground(inputFile, 1)
 
-                                    // configfileValue = 0->make the image visible, =1->make the image invisible
-                                    SearchableImagePdf createPdf = new SearchableImagePdf(finalImage,
-                                            "./textonly_pdf_", "0")
-                                    createPdf.textOnlyPdf(finalImage, 1)
-
-                                    println("getting the size and the location of the image from textonly_pdf_1")
-
-                                    Path path = Paths.get("textonly_pdf_1.pdf")
-
-                                    String ExistingPdfFilePath = path.toAbsolutePath().toString()
+                                    String imageNBorder = imageConverter.createTextOnlyPdf(inputFile)
+                                    String ExistingPdfFilePath = "textonly_pdf_1.pdf"
                                     String outputFilePath = "newFile_1.pdf"
                                     File outputFile = new File(generatedFilesPath.toString(), "${outputFilePath}")
-
 
                                     imageLocationsAndSize.createPdfWithOriginalImage(ExistingPdfFilePath,
                                             outputFile.toString(), imageNBorder)
@@ -121,45 +114,32 @@ ratpack {
                                     redirect "/appear/$outputFilePath/$name"
                                 }
                                  if(options == "Textoverlay"){
-                                    String imageNBorder = imageProcess.ImgAfterDeskewingWithoutBorder(inputFile, 1)
-                                    String finalImage = imageProcess.ImgAfterRemovingBackground(inputFile, 1)
-                                    //Extract text from the image.
-                                    ImageText ocr = new ImageText(finalImage)
-                                    String fulltext = ocr.generateText()
-
-                                    System.out.println("Creating pdf document...")
+                                     String fulltext = imageConverter.produceText(inputFile)
                                     String outputFilePath = "ocrDemo_1.pdf"
                                     File outputFile = new File(generatedFilesPath.toString(), "${outputFilePath}")
                                     TextPdf textpdf = new TextPdf(fulltext, outputFile.toString())
 
-                                    System.out.println("Document created.")
                                     textpdf.generateDocument(fulltext, 1)
-                                    redirect "/appear/$outputFilePath/$name"
 
+                                    redirect "/appear/$outputFilePath/$name"
                                 }
                             }
                 })
             }
             get(":outputFilePath"){
                 FileService fileService ->
-                parse(Form.class).then({ Form form ->
-                    UploadedFile f = form.file("upload")
-                    response.sendFile(fileService.get(pathTokens.outputFilePath, f))
-                })
+                    response.sendFile(fileService.get(pathTokens.outputFilePath))
             }
 
             get(":name"){
                 FileService fileService ->
-                    parse(Form.class).then({ Form form ->
-                        UploadedFile f = form.file("upload")
-                        response.sendFile(fileService.get(pathTokens.name, f))
-                    })
+                    response.sendFile(fileService.get(pathTokens.name))
             }
 
         }
 
-        get('name/:id1'){
-            File filePath = new File("${uploadPath}/${pathTokens['id1']}")
+        get('name/:id'){
+            File filePath = new File("${uploadPath}/${pathTokens['id']}")
             // you'd better check if the file exists...
             println("filePath: ${filePath}, exists: ${filePath.exists()}")
             render Paths.get(filePath.toURI())

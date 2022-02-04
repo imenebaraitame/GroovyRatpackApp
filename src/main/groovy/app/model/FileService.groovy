@@ -26,7 +26,7 @@ interface FileService {
  * @return the file
  */
 
-    Path get(String name, UploadedFile f)
+    Path get(String name)
 
     /**
      * get the suffix of a file
