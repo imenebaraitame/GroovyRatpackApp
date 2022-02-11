@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class PdfCombiner {
+    public static String dirName = "createdFiles";
+    public static File dir = new File (dirName);
 
     @Inject
     public PdfCombiner(){
@@ -25,7 +27,7 @@ public class PdfCombiner {
 
         for (int i=1 ; i<= ExtractImage.countImage(uploadedFile); i++) {
 
-            File file = new File(ocrFile + i + ".pdf");
+            File file = new File(dir,ocrFile + i + ".pdf");
             PDDocument document = PDDocument.load(file);
 
             //adding the source files

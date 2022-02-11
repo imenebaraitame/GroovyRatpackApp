@@ -9,6 +9,8 @@ import java.io.File;
 public class ImageText extends Tesseract {
 
     private String imagePath;
+    public String dirName = "createdFiles";
+    public File dir = new File (dirName);
     @Inject
     public ImageText(String imagePath) {
         this.imagePath = imagePath;
@@ -22,7 +24,7 @@ public class ImageText extends Tesseract {
 
         String fullText = null;
         try {
-            fullText = this.doOCR(new File(imagePath));
+            fullText = this.doOCR(new File(dir,imagePath));
         } catch (TesseractException e) {
             System.err.println("TesseractException:" + e.getMessage());
         }

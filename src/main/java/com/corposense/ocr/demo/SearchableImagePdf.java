@@ -9,7 +9,7 @@ import net.sourceforge.tess4j.TesseractException;
 
 import org.im4java.core.IM4JavaException;
 
-
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +17,9 @@ import java.util.List;
 
 public class SearchableImagePdf {
 	String input_file; String output_file; String configfileValue;
+	public String dirName = "createdFiles";
+	public File dir = new File (dirName);
+
 	
 
 	@Inject
@@ -37,7 +40,9 @@ public class SearchableImagePdf {
 		instance.setDatapath(System.getenv("TESSDATA_PREFIX"));
 		instance.setLanguage("ara+eng");//set the English and Arabic languages
 	    instance.setTessVariable("textonly_pdf_",configfileValue);
-	    instance.createDocuments(new String[]{imagePath}, new String[]{output_file + number}, formats);
+		String img = new File(dir,imagePath).toString();
+		String outputfile = new File(dir,output_file).toString();
+	    instance.createDocuments(new String[]{img}, new String[]{outputfile +number}, formats);
 	    
 		} catch (TesseractException te){
 			System.err.println("Error TE: " + te.getMessage());
@@ -50,16 +55,19 @@ public class SearchableImagePdf {
 
 		for (int i = 1; i <= pageNum; i++) {
 			String extractedImgName = "ExtractedImage_" + i + ".png";
-			String imageNBorder = ImageProcessing.ImgAfterDeskewingWithoutBorder(extractedImgName, i);
-			String finalImage = ImageProcessing.ImgAfterRemovingBackground(extractedImgName, i);
+			ImageProcessing image = new ImageProcessing(extractedImgName);
+			String imageDeskew = image.deskewImage(extractedImgName, i);
+			String imageNBorder = image.removeBorder(imageDeskew,i);
+			String binaryInv = image.binaryInverse(imageNBorder, i);
+			String finalImage = image.imageTransparent(imageNBorder,binaryInv, i);
 
 			// configfileValue = 0->make the image visible, =1->make the image invisible
 			SearchableImagePdf createPdf = new SearchableImagePdf
 					(finalImage, "./textonly_pdf_", "0");
 			createPdf.textOnlyPdf(finalImage, i);
 
-			ImageLocationsAndSize.createPdfWithOriginalImage("./textonly_pdf_" + i + ".pdf",
-					"./newFile_pdf_" + i + ".pdf", imageNBorder);
+			ImageLocationsAndSize.createPdfWithOriginalImage("textonly_pdf_" + i + ".pdf",
+					"newFile_pdf_" + i + ".pdf", imageNBorder);
 		}
 	}
 	/*

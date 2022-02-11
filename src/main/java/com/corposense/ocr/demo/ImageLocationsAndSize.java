@@ -27,9 +27,11 @@ import java.util.List;
 
 
 public class ImageLocationsAndSize extends PDFStreamEngine{
-	
-	
-	 private float imageYPosition, imageXPosition, imageXScale, imageYScale;
+
+
+	private float imageYPosition, imageXPosition, imageXScale, imageYScale;
+	public static String dirName = "createdFiles";
+	public static File dir = new File (dirName);
 	 
         /**
 	     * @throws IOException If there is an error loading text stripper properties.
@@ -84,25 +86,21 @@ public class ImageLocationsAndSize extends PDFStreamEngine{
 		
 	}
 
-	/**
-     * Place image on existing pdf.
-     * @param inputFilePath
-     * @param outputFilePath
-     * @param imgPath
-     * @throws DocumentException
-     * @throws IOException
-     */ 
-	public void PalceImageOnExistingPdf(String inputFilePath,String outputFilePath,String imgPath ) throws DocumentException, IOException {
-	    OutputStream file = new FileOutputStream(new File(outputFilePath));
+	//Place image on existing pdf.
 
-	    PdfReader pdfReader = new PdfReader(inputFilePath);
+	public String PalceImageOnExistingPdf(String inputFilePath, String outputFilePath, String imgPath ) throws DocumentException, IOException {
+	    OutputStream file = new FileOutputStream(new File(dir,outputFilePath));
+		String inputFile = new File(dir,inputFilePath).toString();
+
+	    PdfReader pdfReader = new PdfReader(inputFile);
 	    PdfStamper pdfStamper = new PdfStamper(pdfReader, file);
 	    //Image to be added in existing pdf file.
-	    Image Img = Image.getInstance(imgPath);
+		String img = new File(dir,imgPath).toString();
+	    Image image = Image.getInstance(img);
 	    //Scale image's width and height
-	    Img.scaleAbsolute(imageXScale, imageYScale);
+	    image.scaleAbsolute(imageXScale, imageYScale);
 	    //Set position for image in PDF
-	    Img.setAbsolutePosition(imageXPosition,imageYPosition);
+	    image.setAbsolutePosition(imageXPosition,imageYPosition);
 	    
 	    
 	     // loop on all the PDF pages
@@ -111,20 +109,21 @@ public class ImageLocationsAndSize extends PDFStreamEngine{
 	    //getOverContent() allows you to write pdfContentByte on TOP of existing pdf pdfContentByte.
 	      
 	           PdfContentByte pdfContentByte = pdfStamper.getOverContent(i);
-	           pdfContentByte.addImage(Img);
+	           pdfContentByte.addImage(image);
 	           
 	     }
-	     System.out.println("Document will be created at: "+ new File(outputFilePath).getPath() );
+		 String filePath =  new File(dir,outputFilePath).getPath();
+	     System.out.println("Document will be created at: "+ filePath );
 	     pdfStamper.close();
-	   
+	   return filePath;
 		}
 
-	public static void createPdfWithOriginalImage(String ExistingPdfFilePath, String outputFilePath, String imageNBorder) 
+	public static String createPdfWithOriginalImage(String ExistingPdfFilePath, String outputFilePath, String imageNBorder)
 			           throws IOException, DocumentException {
 		   PDDocument document = null;
 	        try {
 
-	       	document = PDDocument.load(new File(ExistingPdfFilePath));
+	       	document = PDDocument.load(new File(dir,ExistingPdfFilePath));
 	           ImageLocationsAndSize printer = new ImageLocationsAndSize();
 
 	           for( PDPage page : document.getPages() )
@@ -135,14 +134,17 @@ public class ImageLocationsAndSize extends PDFStreamEngine{
 	           System.out.println("Document created.");
 
 	        //Place the original image on top of transparent image in existing PDF.
-	           printer.PalceImageOnExistingPdf(ExistingPdfFilePath, outputFilePath, imageNBorder);
+	           String filePath = printer.PalceImageOnExistingPdf(ExistingPdfFilePath, outputFilePath, imageNBorder);
+			   return filePath;
 	        }
+
 	        finally {
 	       	 if(document != null)
 	       	 {
 	       		 document.close();
 	       	 }
 	        }
+
 	}
 
 }

@@ -7,7 +7,7 @@ import org.apache.pdfbox.contentstream.PDFStreamEngine;
 import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.graphics.PDXObject;
@@ -22,12 +22,15 @@ import java.io.IOException;
 import java.util.List;
 
 public class ExtractImage extends PDFStreamEngine {
-
+    public String dirName = "createdFiles";
+    public File dir = new File (dirName);
     @Inject
     public ExtractImage(){
+
     }
 
     private int imageNumber = 1;
+
 
 
     @Override
@@ -42,7 +45,7 @@ public class ExtractImage extends PDFStreamEngine {
                 // save image to local
                 BufferedImage bImage = image.getImage();
                 String pathName = "ExtractedImage_" + imageNumber + ".png";
-                File file = new File(pathName);
+                File file = new File(dir,pathName);
                 ImageIO.write(bImage, "PNG", file);
                 System.out.println("Image saved.");
 

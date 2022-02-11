@@ -14,6 +14,8 @@ public class TextPdf {
 
     private final String fullText;
     private final String docPath;
+    public String dirName = "createdFiles";
+    public File dir = new File (dirName);
 
 @Inject
     public TextPdf(String fullText, String docPath) {
@@ -21,11 +23,12 @@ public class TextPdf {
         this.docPath = docPath;
     }
 
-    public void generateDocument(String fullText , int number) throws FileNotFoundException, DocumentException {
+    public String generateDocument(String fullText , int number) throws FileNotFoundException, DocumentException {
         Document document = new Document(PageSize.LETTER);
         //2) Get a PdfWriter instance
-        FileOutputStream fos = new FileOutputStream(this.docPath);
-        System.out.println("File will be created at: " + new File(this.docPath).getPath());
+        String doc = new File(dir, docPath).toString();
+        FileOutputStream fos = new FileOutputStream(doc);
+        System.out.println("File will be created at: " + new File(dir,this.docPath).getPath());
         PdfWriter.getInstance(document, fos);
         //3) Open the Document
         document.open();
@@ -37,14 +40,19 @@ public class TextPdf {
         document.add(paragraph2);
         //5) Close the document
         document.close();
+        return doc;
     }
 
     public static void createTextOverlay(int pageNum) throws DocumentException,
             IOException, InterruptedException, IM4JavaException {
         for( int i = 1 ; i <= pageNum; i++){
             String extractedImgName = "ExtractedImage_" + i + ".png";
-            String imageNBorder = ImageProcessing.ImgAfterDeskewingWithoutBorder(extractedImgName, i);
-            String finalImage = ImageProcessing.ImgAfterRemovingBackground(extractedImgName, i);
+            ImageProcessing image = new ImageProcessing(extractedImgName);
+            String imageDeskew = image.deskewImage(extractedImgName, i);
+            String imageNBorder = image.removeBorder(imageDeskew,i);
+            String binaryInv = image.binaryInverse(imageNBorder, i);
+            String finalImage = image.imageTransparent(imageNBorder,binaryInv, i);
+
             //Extract text from the image.
             ImageText ocr = new ImageText(finalImage);
             String fulltext = ocr.generateText();

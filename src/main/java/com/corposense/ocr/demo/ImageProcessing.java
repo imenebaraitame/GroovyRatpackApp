@@ -18,6 +18,10 @@ public class ImageProcessing {
 	public static final String IMAGE_MAGICK_PATH;
 	public static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
 	private String imagePath;
+	public String dirName = "createdFiles";
+	public File dir = new File (dirName);
+
+
 
 	static {
 		if (Utils.isWindows()){
@@ -27,31 +31,39 @@ public class ImageProcessing {
 		}	
 	}
 
-
-	
 @Inject
 	public ImageProcessing(String imagePath) {
 		this.imagePath = imagePath;
-
 	}
 	
 	/*
 	 * Straightening a rotated image.
 	 */
   public String deskewImage(String inputImgPath , int num) throws IOException {
-	    BufferedImage bi = ImageIO.read( new File(inputImgPath));
+	  BufferedImage bi = ImageIO.read( new File(dir,inputImgPath));
 	    ImageDeskew id = new ImageDeskew(bi);
 	    double imageSkewAngle = id.getSkewAngle(); // determine skew angle
 	    if ((imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle < -(MINIMUM_DESKEW_THRESHOLD))) {
 	        bi = ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image
 	    }
-	    String straightenImgPath = "./deskewImage_" + num + ".png";
-	    ImageIO.write(bi, "png", new File(straightenImgPath));
+	    String straightenImgPath = "deskewImage_" + num + ".png";
+	    ImageIO.write(bi, "png", new File(dir,straightenImgPath));
 
 	    return straightenImgPath;
 	}
-  
-  
+	public String rotateImage(String inputImgPath , int num) throws IOException {
+		BufferedImage bi = ImageIO.read( new File(inputImgPath));
+		ImageDeskew id = new ImageDeskew(bi);
+		double imageSkewAngle = id.getSkewAngle(); // determine skew angle
+		if ((imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle < -(MINIMUM_DESKEW_THRESHOLD))) {
+			bi = ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image
+		}
+		String straightenImgPath = "deskewImage_" + num + ".png";
+		ImageIO.write(bi, "png", new File(dir,straightenImgPath));
+
+		return straightenImgPath;
+	}
+
   /*
 	 Get rid of a black border around image.
 
@@ -62,13 +74,13 @@ public class ImageProcessing {
 	  IMOperation op = new IMOperation();
 	  op.addImage();
 	  op.density(300);
-	  op.bordercolor("black").border(1).fuzz (0.95).fill("white").draw("color 0,0 floodfill");
+	  op.bordercolor("black").border(1).fuzz(0.95).fill("white").draw("color 0,0 floodfill");
 	  op.addImage();
 	  ConvertCmd cmd = new ConvertCmd();
-      BufferedImage image =  ImageIO.read(new File(inputImage));
+      BufferedImage image =  ImageIO.read(new File(dir,inputImage));
       String outFile = "./borderRemoved_" + num + ".png";
-      ImageIO.write(image, "png", new File(outFile));
-      cmd.run(op,inputImage,outFile);
+	  String file = new File(dir,outFile).toString();
+      cmd.run(op,image,file);
 	  return outFile;
   }
   
@@ -94,10 +106,10 @@ public class ImageProcessing {
 	    
 	      // execute the operation
 	      ConvertCmd cmd = new ConvertCmd();
-	      BufferedImage img =  ImageIO.read(new File(deskew));
+	      BufferedImage img =  ImageIO.read(new File(dir,deskew));
 	      String outfile = "./binaryInverseImg_" + num + ".png";
-	      ImageIO.write(img, "png", new File(outfile));
-        cmd.run(op,img,outfile);
+		  String file = new File(dir,outfile).toString();
+          cmd.run(op,img,file);
         
         return outfile;
        
@@ -119,36 +131,14 @@ public class ImageProcessing {
 	      op.alpha("off").compose("copy_opacity").composite();
 	      op.addImage();
 	      ConvertCmd cmd = new ConvertCmd();
-	      BufferedImage IMG1 =  ImageIO.read(new File(originalImgPath));
-	      BufferedImage IMG2 =  ImageIO.read(new File(nbackgroundImgPath));
+	      BufferedImage IMG1 =  ImageIO.read(new File(dir,originalImgPath));
+	      BufferedImage IMG2 =  ImageIO.read(new File(dir,nbackgroundImgPath));
 	      String outputFile = "./transparentImg_" + num + ".png";
-	      ImageIO.write(IMG1,"png", new File(outputFile));
-	      ImageIO.write(IMG2,"png", new File(outputFile));
-	      cmd.run(op,originalImgPath,nbackgroundImgPath,outputFile);
+		  String file = new File(dir,outputFile).toString();
+	      cmd.run(op,IMG1,IMG2,file);
 		  
 		return outputFile;
     	  
       }
-      
-      
-    public static String ImgAfterDeskewingWithoutBorder(String imagePath , int number)
-     		     throws IOException, InterruptedException, IM4JavaException {
-    	
-    	ImageProcessing image = new ImageProcessing(imagePath);
-		String imageDeskew = image.deskewImage(imagePath, number);
-		String imageNBorder = image.removeBorder(imageDeskew,number);
 
-		return imageNBorder;
-    }
-
-    public static String ImgAfterRemovingBackground(String imagePath,  int number)
-			throws IOException, InterruptedException, IM4JavaException {
-    	
-    	ImageProcessing image = new ImageProcessing(imagePath );
-    	String imageNBorder = ImageProcessing.ImgAfterDeskewingWithoutBorder(imagePath, number);
-    	String binaryInv = image.binaryInverse(imageNBorder, number);
-		String finalImage = image.imageTransparent(imageNBorder,binaryInv, number);
-		
-		return finalImage;
-    }
 }

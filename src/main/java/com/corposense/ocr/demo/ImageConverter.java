@@ -12,8 +12,11 @@ public class ImageConverter {
 
     }
     public String createTextOnlyPdf(String inputFile) throws IOException, InterruptedException, IM4JavaException {
-        String imageNBorder = ImageProcessing.ImgAfterDeskewingWithoutBorder(inputFile, 1);
-        String finalImage = ImageProcessing.ImgAfterRemovingBackground(inputFile, 1);
+        ImageProcessing image = new ImageProcessing(inputFile);
+        String imageDeskew = image.rotateImage(inputFile, 1);
+        String imageNBorder = image.removeBorder(imageDeskew,1);
+        String binaryInv = image.binaryInverse(imageNBorder, 1);
+        String finalImage = image.imageTransparent(imageNBorder,binaryInv, 1);
 
         // configfileValue = 0->make the image visible, =1->make the image invisible
         SearchableImagePdf createPdf = new SearchableImagePdf(finalImage,
@@ -25,8 +28,12 @@ public class ImageConverter {
     }
 
     public String produceText(String inputFile) throws IOException, InterruptedException, IM4JavaException {
-        ImageProcessing.ImgAfterDeskewingWithoutBorder(inputFile, 1);
-        String finalImage = ImageProcessing.ImgAfterRemovingBackground(inputFile, 1);
+        ImageProcessing image = new ImageProcessing(inputFile);
+        String imageDeskew = image.rotateImage(inputFile, 1);
+        String imageNBorder = image.removeBorder(imageDeskew,1);
+        String binaryInv = image.binaryInverse(imageNBorder, 1);
+        String finalImage = image.imageTransparent(imageNBorder,binaryInv, 1);
+
         //Extract text from the image.
         ImageText ocr = new ImageText(finalImage);
         String fulltext = ocr.generateText();
