@@ -18,9 +18,7 @@ public class ImageProcessing {
 	public static final String IMAGE_MAGICK_PATH;
 	public static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
 	private String imagePath;
-	public String dirName = "createdFiles";
-	public File dir = new File (dirName);
-
+	public File dirPath;// = new File ("createdFiles");
 
 
 	static {
@@ -31,24 +29,24 @@ public class ImageProcessing {
 		}	
 	}
 
-@Inject
-	public ImageProcessing(String imagePath) {
+	@Inject
+	public ImageProcessing(String imagePath, File dirPath) {
 		this.imagePath = imagePath;
+		this.dirPath = dirPath;
 	}
 	
 	/*
 	 * Straightening a rotated image.
 	 */
   public String deskewImage(String inputImgPath , int num) throws IOException {
-	  BufferedImage bi = ImageIO.read( new File(dir,inputImgPath));
+	  	BufferedImage bi = ImageIO.read(new File(dirPath,inputImgPath));
 	    ImageDeskew id = new ImageDeskew(bi);
 	    double imageSkewAngle = id.getSkewAngle(); // determine skew angle
 	    if ((imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle < -(MINIMUM_DESKEW_THRESHOLD))) {
 	        bi = ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image
 	    }
 	    String straightenImgPath = "deskewImage_" + num + ".png";
-	    ImageIO.write(bi, "png", new File(dir,straightenImgPath));
-
+	    ImageIO.write(bi, "png", new File(dirPath,straightenImgPath));
 	    return straightenImgPath;
 	}
 	public String rotateImage(String inputImgPath , int num) throws IOException {
@@ -59,7 +57,7 @@ public class ImageProcessing {
 			bi = ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image
 		}
 		String straightenImgPath = "deskewImage_" + num + ".png";
-		ImageIO.write(bi, "png", new File(dir,straightenImgPath));
+		ImageIO.write(bi, "png", new File(dirPath,straightenImgPath));
 
 		return straightenImgPath;
 	}
@@ -77,9 +75,9 @@ public class ImageProcessing {
 	  op.bordercolor("black").border(1).fuzz(0.95).fill("white").draw("color 0,0 floodfill");
 	  op.addImage();
 	  ConvertCmd cmd = new ConvertCmd();
-      BufferedImage image =  ImageIO.read(new File(dir,inputImage));
+      BufferedImage image =  ImageIO.read(new File(dirPath,inputImage));
       String outFile = "./borderRemoved_" + num + ".png";
-	  String file = new File(dir,outFile).toString();
+	  String file = new File(dirPath,outFile).toString();
       cmd.run(op,image,file);
 	  return outFile;
   }
@@ -106,9 +104,9 @@ public class ImageProcessing {
 	    
 	      // execute the operation
 	      ConvertCmd cmd = new ConvertCmd();
-	      BufferedImage img =  ImageIO.read(new File(dir,deskew));
+	      BufferedImage img =  ImageIO.read(new File(dirPath,deskew));
 	      String outfile = "./binaryInverseImg_" + num + ".png";
-		  String file = new File(dir,outfile).toString();
+		  String file = new File(dirPath,outfile).toString();
           cmd.run(op,img,file);
         
         return outfile;
@@ -131,10 +129,10 @@ public class ImageProcessing {
 	      op.alpha("off").compose("copy_opacity").composite();
 	      op.addImage();
 	      ConvertCmd cmd = new ConvertCmd();
-	      BufferedImage IMG1 =  ImageIO.read(new File(dir,originalImgPath));
-	      BufferedImage IMG2 =  ImageIO.read(new File(dir,nbackgroundImgPath));
+	      BufferedImage IMG1 =  ImageIO.read(new File(dirPath,originalImgPath));
+	      BufferedImage IMG2 =  ImageIO.read(new File(dirPath,nbackgroundImgPath));
 	      String outputFile = "./transparentImg_" + num + ".png";
-		  String file = new File(dir,outputFile).toString();
+		  String file = new File(dirPath,outputFile).toString();
 	      cmd.run(op,IMG1,IMG2,file);
 		  
 		return outputFile;
