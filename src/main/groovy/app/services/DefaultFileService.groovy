@@ -42,15 +42,6 @@ class DefaultFileService implements FileService {
     Boolean isPdfFile( UploadedFile file ) {
         file.contentType.type.contains( "application/pdf" )
     }
-    @Override
-    void deleteFiles(){
-        File startDir = new File(getClass().getResource("createdFiles").toURI())
-        startDir.eachFileRecurse() {
-            if (it.name.endsWith('.png')  || it.name.endsWith('.pdf')) {
-                it.delete()
-            }
-        }
-    }
 
     private static String getFileName(String name) {
        return "${prefix}${name}"

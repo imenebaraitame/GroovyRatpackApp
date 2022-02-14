@@ -1,6 +1,5 @@
 package com.corposense.ocr.demo;
 
-
 import com.google.inject.Inject;
 
 import org.apache.pdfbox.contentstream.PDFStreamEngine;
@@ -14,24 +13,27 @@ import org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+
 public class ExtractImage extends PDFStreamEngine {
-    public String dirName = "createdFiles";
-    public File dir = new File (dirName);
+    Path dirPath = Paths.get("public/generatedFiles/createdFiles");
+    String dirp = dirPath.toAbsolutePath().toString();
+    public File dir = new File(dirp);
+
+
     @Inject
     public ExtractImage(){
 
     }
 
     private int imageNumber = 1;
-
-
 
     @Override
     protected void processOperator(Operator operator, List<COSBase> operands) throws IOException {
@@ -44,6 +46,7 @@ public class ExtractImage extends PDFStreamEngine {
 
                 // save image to local
                 BufferedImage bImage = image.getImage();
+                System.out.println(dirp);
                 String pathName = "ExtractedImage_" + imageNumber + ".png";
                 File file = new File(dir,pathName);
                 ImageIO.write(bImage, "PNG", file);

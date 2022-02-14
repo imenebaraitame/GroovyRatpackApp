@@ -12,13 +12,23 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
+
 
 public class ImageProcessing {
 
 	public static final String IMAGE_MAGICK_PATH;
 	public static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
 	private String imagePath;
-	public File dirPath;// = new File ("createdFiles");
+	Path dirPat = Paths.get("public/generatedFiles/createdFiles");
+
+	String dirp = dirPat.toAbsolutePath().toString();
+	public File dirPath = new File(dirp);
+
+
+
 
 
 	static {
@@ -30,9 +40,8 @@ public class ImageProcessing {
 	}
 
 	@Inject
-	public ImageProcessing(String imagePath, File dirPath) {
+	public ImageProcessing(String imagePath){
 		this.imagePath = imagePath;
-		this.dirPath = dirPath;
 	}
 	
 	/*

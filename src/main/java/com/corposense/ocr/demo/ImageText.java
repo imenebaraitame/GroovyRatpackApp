@@ -9,7 +9,7 @@ import java.io.File;
 public class ImageText extends Tesseract {
 
     private String imagePath;
-    public String dirName = "createdFiles";
+    public String dirName = "public/generatedFiles/createdFiles";
     public File dir = new File (dirName);
     @Inject
     public ImageText(String imagePath) {

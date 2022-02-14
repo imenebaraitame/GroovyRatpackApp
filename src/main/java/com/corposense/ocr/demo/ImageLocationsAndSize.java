@@ -23,16 +23,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ImageLocationsAndSize extends PDFStreamEngine{
 
 
 	private float imageYPosition, imageXPosition, imageXScale, imageYScale;
-	public static String dirName = "createdFiles";
-	public static File dir = new File (dirName);
-	 
+
         /**
 	     * @throws IOException If there is an error loading text stripper properties.
 	     */ 
@@ -89,6 +90,10 @@ public class ImageLocationsAndSize extends PDFStreamEngine{
 	//Place image on existing pdf.
 
 	public String PalceImageOnExistingPdf(String inputFilePath, String outputFilePath, String imgPath ) throws DocumentException, IOException {
+		Path dirPat = Paths.get("public/generatedFiles/createdFiles");
+
+		String dirp = dirPat.toAbsolutePath().toString();
+		File dir = new File(dirp);
 	    OutputStream file = new FileOutputStream(new File(dir,outputFilePath));
 		String inputFile = new File(dir,inputFilePath).toString();
 
@@ -120,9 +125,13 @@ public class ImageLocationsAndSize extends PDFStreamEngine{
 
 	public static String createPdfWithOriginalImage(String ExistingPdfFilePath, String outputFilePath, String imageNBorder)
 			           throws IOException, DocumentException {
+
 		   PDDocument document = null;
 	        try {
+				Path dirPath = Paths.get("public/generatedFiles/createdFiles");
 
+				String dirp = dirPath.toAbsolutePath().toString();
+				File dir = new File(dirp);
 	       	document = PDDocument.load(new File(dir,ExistingPdfFilePath));
 	           ImageLocationsAndSize printer = new ImageLocationsAndSize();
 

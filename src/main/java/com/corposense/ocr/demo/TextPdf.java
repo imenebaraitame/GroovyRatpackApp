@@ -14,7 +14,7 @@ public class TextPdf {
 
     private final String fullText;
     private final String docPath;
-    public String dirName = "createdFiles";
+    public String dirName = "public/generatedFiles/createdFiles";
     public File dir = new File (dirName);
 
 @Inject

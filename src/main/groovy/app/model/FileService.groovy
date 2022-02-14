@@ -44,9 +44,4 @@ interface FileService {
      */
     Boolean isPdfFile(UploadedFile f)
 
-    /**
-     * delete files
-     */
-    void deleteFiles()
-
 }

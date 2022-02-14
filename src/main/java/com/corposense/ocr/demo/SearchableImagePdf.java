@@ -1,6 +1,5 @@
 package com.corposense.ocr.demo;
 
-
 import com.google.inject.Inject;
 import com.itextpdf.text.DocumentException;
 import net.sourceforge.tess4j.ITesseract.RenderedFormat;
@@ -11,16 +10,19 @@ import org.im4java.core.IM4JavaException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class SearchableImagePdf {
 	String input_file; String output_file; String configfileValue;
-	public String dirName = "createdFiles";
-	public File dir = new File (dirName);
 
-	
+	Path dirPath = Paths.get("public/generatedFiles/createdFiles");
+	String dirp = dirPath.toAbsolutePath().toString();
+	public File dir = new File(dirp);
 
 	@Inject
 	public SearchableImagePdf(String input_file, String output_file, String configfileValue){
@@ -50,7 +52,7 @@ public class SearchableImagePdf {
 
 	}
 
-	public static void createSearchablePdf( int pageNum) throws IOException, InterruptedException,
+	public static void createSearchablePdf(int pageNum) throws IOException, InterruptedException,
 			                                                 IM4JavaException, DocumentException {
 
 		for (int i = 1; i <= pageNum; i++) {

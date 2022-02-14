@@ -4,13 +4,16 @@ import com.google.inject.Inject;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
-
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class PdfCombiner {
-    public static String dirName = "createdFiles";
-    public static File dir = new File (dirName);
+    public static Path dirPath = Paths.get("public/generatedFiles/createdFiles");
+    public static String dirp = dirPath.toAbsolutePath().toString();
+    public static File dir = new File(dirp);
+
 
     @Inject
     public PdfCombiner(){
