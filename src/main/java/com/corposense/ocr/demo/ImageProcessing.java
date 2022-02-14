@@ -12,9 +12,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
+
 import java.nio.file.Paths;
-import java.util.Objects;
+
 
 
 public class ImageProcessing {
@@ -22,14 +22,9 @@ public class ImageProcessing {
 	public static final String IMAGE_MAGICK_PATH;
 	public static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
 	private String imagePath;
-	Path dirPat = Paths.get("public/generatedFiles/createdFiles");
 
-	String dirp = dirPat.toAbsolutePath().toString();
-	public File dirPath = new File(dirp);
-
-
-
-
+	public String dirPath = Paths.get("public/generatedFiles/createdFiles").toAbsolutePath().toString();
+	public File dir = new File(dirPath);
 
 	static {
 		if (Utils.isWindows()){

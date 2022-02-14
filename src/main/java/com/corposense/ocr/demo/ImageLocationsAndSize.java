@@ -90,10 +90,9 @@ public class ImageLocationsAndSize extends PDFStreamEngine{
 	//Place image on existing pdf.
 
 	public String PalceImageOnExistingPdf(String inputFilePath, String outputFilePath, String imgPath ) throws DocumentException, IOException {
-		Path dirPat = Paths.get("public/generatedFiles/createdFiles");
+		String dirPath = Paths.get("public/generatedFiles/createdFiles").toAbsolutePath().toString();
+		File dir = new File(dirPath);
 
-		String dirp = dirPat.toAbsolutePath().toString();
-		File dir = new File(dirp);
 	    OutputStream file = new FileOutputStream(new File(dir,outputFilePath));
 		String inputFile = new File(dir,inputFilePath).toString();
 
@@ -128,10 +127,8 @@ public class ImageLocationsAndSize extends PDFStreamEngine{
 
 		   PDDocument document = null;
 	        try {
-				Path dirPath = Paths.get("public/generatedFiles/createdFiles");
-
-				String dirp = dirPath.toAbsolutePath().toString();
-				File dir = new File(dirp);
+				String dirPath = Paths.get("public/generatedFiles/createdFiles").toAbsolutePath().toString();
+				File dir = new File(dirPath);
 	       	document = PDDocument.load(new File(dir,ExistingPdfFilePath));
 	           ImageLocationsAndSize printer = new ImageLocationsAndSize();
 

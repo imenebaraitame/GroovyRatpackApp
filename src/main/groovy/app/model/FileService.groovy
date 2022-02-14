@@ -44,4 +44,16 @@ interface FileService {
      */
     Boolean isPdfFile(UploadedFile f)
 
+    /**
+     * delete created files
+     * @param filePath
+     */
+    void deleteFiles(String filePath)
+    /**
+     * move file from directory to another
+     * @param dirPath
+     * @param pdfPath
+     */
+    void moveFile(String dirPath , String pdfPath)
+
 }

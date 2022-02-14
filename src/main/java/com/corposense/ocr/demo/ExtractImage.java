@@ -17,15 +17,14 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
+
 import java.nio.file.Paths;
 import java.util.List;
 
 
 public class ExtractImage extends PDFStreamEngine {
-    Path dirPath = Paths.get("public/generatedFiles/createdFiles");
-    String dirp = dirPath.toAbsolutePath().toString();
-    public File dir = new File(dirp);
+    public String dirPath = Paths.get("public/generatedFiles/createdFiles").toAbsolutePath().toString();
+    public File dir = new File(dirPath);
 
 
     @Inject
@@ -46,7 +45,7 @@ public class ExtractImage extends PDFStreamEngine {
 
                 // save image to local
                 BufferedImage bImage = image.getImage();
-                System.out.println(dirp);
+                System.out.println(dir);
                 String pathName = "ExtractedImage_" + imageNumber + ".png";
                 File file = new File(dir,pathName);
                 ImageIO.write(bImage, "PNG", file);

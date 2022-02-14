@@ -43,6 +43,21 @@ class DefaultFileService implements FileService {
         file.contentType.type.contains( "application/pdf" )
     }
 
+    @Override
+    void deleteFiles(String filePath){
+        File startDir = new File(filePath)
+        startDir.eachFileRecurse() {
+            if(it.name.endsWith('.png') || it.name.endsWith('.pdf')) {
+                it.delete()
+            }
+        }
+    }
+    @Override
+    void moveFile(String dirPath , String pdfPath){
+        File pdfOutPutFile = new File(pdfPath)
+        pdfOutPutFile.renameTo(new File(dirPath,pdfOutPutFile.getName()))
+
+    }
     private static String getFileName(String name) {
        return "${prefix}${name}"
     }

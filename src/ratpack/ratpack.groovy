@@ -22,7 +22,6 @@ import static ratpack.groovy.Groovy.ratpack
 import ratpack.server.BaseDir
 import java.nio.file.Paths
 
-
 String uploadDir = 'uploads'
 String publicDir = 'public'
 String generatedFilesDir = "generatedFiles"
@@ -30,11 +29,11 @@ String createdFilesDir = "createdFiles"
 
 Path baseDir = BaseDir.find("${publicDir}/${uploadDir}")
 Path baseGeneratedFilesDir = BaseDir.find("${publicDir}/${generatedFilesDir}")
-Path basecreatedFilesDir = BaseDir.find("${publicDir}/${generatedFilesDir}/${createdFilesDir}")
+Path baseCreatedFilesDir = BaseDir.find("${publicDir}/${generatedFilesDir}/${createdFilesDir}")
 
 Path generatedFilesPath = baseGeneratedFilesDir.resolve(generatedFilesDir)
 Path uploadPath = baseDir.resolve(uploadDir)
-Path createdFilesPath = basecreatedFilesDir.resolve(createdFilesDir)
+Path createdFilesPath = baseCreatedFilesDir.resolve(createdFilesDir)
 
 
 ratpack {
@@ -55,8 +54,6 @@ ratpack {
         bind(PdfConverter)
         bind(PdfCombiner)
         bind(ImageConverter)
-
-
     }
     handlers {
         prefix("upload"){
@@ -76,38 +73,30 @@ ratpack {
                         UploadedFile f = form.file("upload")
                         String options = form.get('options')
 
-                        String name = fileService.save(f, uploadPath.toString())
-                        File filePath = new File("${uploadPath}/${name}")
-                        String inputFile = filePath.toString()
+                        String name = fileService.save(f, "${uploadPath}")
+                        File inputfilePath = new File("${uploadPath}/${name}")
+
 
                               if (fileService.isPdfFile(f)) {
                                 if (options == "SearchablePDF") {
-                                    pdfConverter.produceSearchablePdf(inputFile)
+                                    pdfConverter.produceSearchablePdf("${inputfilePath}")
                                     String outputFilePath = "mergedImgPdf.pdf"
                                     File mergedFiles = new File("${generatedFilesPath}", "${outputFilePath}")
-                                    PdfCombiner.mergePdfDocuments( inputFile,"newFile_pdf_", mergedFiles.toString())
+                                    PdfCombiner.mergePdfDocuments("${inputfilePath}" ,"newFile_pdf_",
+                                            "${mergedFiles}")
 
-                                    File startDir = new File("${createdFilesPath}")
-                                    startDir.eachFileRecurse() {
-                                        if(it.name.endsWith('.png') || it.name.endsWith('.pdf')) {
-                                            it.delete()
-                                        }
-                                    }
+                                    fileService.deleteFiles("${createdFilesPath}")
                                     redirect "/show/$outputFilePath/$name"
 
                                 }
                                 if(options == "Textoverlay"){
-                                    pdfConverter.produceTextOverlay(inputFile)
+                                    pdfConverter.produceTextOverlay("${inputfilePath}")
                                     String outputFilePath = "mergedText.pdf"
-                                    File outputFile1 = new File("${generatedFilesPath}", "${outputFilePath}")
-                                    PdfCombiner.mergePdfDocuments(inputFile, "ocrDemo_pdf_", outputFile1.toString())
+                                    File outputFile = new File("${generatedFilesPath}", "${outputFilePath}")
+                                    PdfCombiner.mergePdfDocuments("${inputfilePath}", "ocrDemo_pdf_"
+                                            ,"${outputFile}")
 
-                                    File startDir = new File("${createdFilesPath}")
-                                    startDir.eachFileRecurse() {
-                                        if (it.name.endsWith('.png')  || it.name.endsWith('.pdf')) {
-                                            it.delete()
-                                        }
-                                    }
+                                    fileService.deleteFiles("${createdFilesPath}")
                                     redirect "/show/$outputFilePath/$name"
                                 }
 
@@ -115,38 +104,24 @@ ratpack {
                             } else {
                                 if (options == "SearchablePDF") {
 
-                                    String imageNBorder = imageConverter.createTextOnlyPdf(inputFile)
-                                    String ExistingPdfFilePath = "textonly_pdf_1.pdf"
+                                    String imageNBorder = imageConverter.createTextOnlyPdf("${inputfilePath}")
                                     String outputFilePath = "newFile_1.pdf"
-                                    String pdfFile = imageLocationsAndSize.createPdfWithOriginalImage(ExistingPdfFilePath,
+                                    String pdfFile = imageLocationsAndSize.createPdfWithOriginalImage("textonly_pdf_1.pdf",
                                             outputFilePath , imageNBorder)
-                                    File pdfOutPutFile = new File(pdfFile)
-                                    pdfOutPutFile.renameTo(new File("${generatedFilesPath}",pdfOutPutFile.getName()))
 
-                                    File startDir = new File("${createdFilesPath}")
-                                    startDir.eachFileRecurse() {
-                                        if (it.name.endsWith('.png')  || it.name.endsWith('.pdf')) {
-                                            it.delete()
-                                        }
-                                    }
+                                    fileService.moveFile("${generatedFilesPath}",pdfFile)
+                                    fileService.deleteFiles("${createdFilesPath}")
 
                                     redirect "/appear/$outputFilePath/$name"
                                 }
                                  if(options == "Textoverlay"){
-                                    String fulltext = imageConverter.produceText(inputFile)
-                                    String outputFilePath = "ocrDemo_1.pdf"
-                                    TextPdf textpdf = new TextPdf(fulltext, outputFilePath)
+                                     String fulltext = imageConverter.produceText("${inputfilePath}")
+                                     String outputFilePath = "ocrDemo_1.pdf"
+                                     TextPdf textpdf = new TextPdf(fulltext, outputFilePath)
+                                     String doc = textpdf.generateDocument(fulltext, 1)
 
-                                    String doc = textpdf.generateDocument(fulltext, 1)
-                                    File pdfOutPutFile = new File(doc)
-                                    pdfOutPutFile.renameTo(new File("${createdFilesPath}", pdfOutPutFile.getName()))
-
-                                    File startDir = new File("${createdFilesPath}")
-                                    startDir.eachFileRecurse() {
-                                        if (it.name.endsWith('.png')  || it.name.endsWith('.pdf')) {
-                                            it.delete()
-                                        }
-                                     }
+                                     fileService.moveFile("${generatedFilesPath}",doc)
+                                     fileService.deleteFiles("${createdFilesPath}")
 
                                     redirect "/appear/$outputFilePath/$name"
                                 }

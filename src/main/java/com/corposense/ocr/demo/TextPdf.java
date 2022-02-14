@@ -9,13 +9,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class TextPdf {
 
     private final String fullText;
     private final String docPath;
-    public String dirName = "public/generatedFiles/createdFiles";
-    public File dir = new File (dirName);
+
+    public String dirPath = Paths.get("public/generatedFiles/createdFiles").toAbsolutePath().toString();
+    public File dir = new File(dirPath);
+
 
 @Inject
     public TextPdf(String fullText, String docPath) {

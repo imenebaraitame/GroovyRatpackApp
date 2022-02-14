@@ -5,14 +5,17 @@ import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 public class ImageText extends Tesseract {
 
     private String imagePath;
-    public String dirName = "public/generatedFiles/createdFiles";
-    public File dir = new File (dirName);
+    public String dirPath = Paths.get("public/generatedFiles/createdFiles").toAbsolutePath().toString();
+    public File dir = new File(dirPath);
+
     @Inject
     public ImageText(String imagePath) {
+
         this.imagePath = imagePath;
     }
 
