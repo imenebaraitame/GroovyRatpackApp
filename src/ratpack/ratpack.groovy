@@ -114,7 +114,7 @@ ratpack {
                                     redirect "/show/$outputFilePath/$name"
                                 }
 
-                            }else{
+                            } else {
                                 if (options == "SearchablePDF") {
 
                                     String imageNBorder = imageConverter.createTextOnlyPdf(inputFile)
@@ -134,20 +134,21 @@ ratpack {
 
                                     redirect "/appear/$outputFilePath/$name"
                                 }
+                                // Dealing with Images
                                  if(options == "Textoverlay"){
-                                     String fulltext = imageConverter.produceText(inputFile)
+                                    String fulltext = imageConverter.produceText(inputFile)
                                     String outputFilePath = "ocrDemo_1.pdf"
                                     TextPdf textpdf = new TextPdf(fulltext, outputFilePath)
 
                                     String doc = textpdf.generateDocument(fulltext, 1)
-                                     File pdfOutPutFile = new File(doc)
-                                     pdfOutPutFile.renameTo(new File(generatedFilesPath.toString(), pdfOutPutFile.getName()))
+                                    File pdfOutPutFile = new File(doc)
+                                    pdfOutPutFile.renameTo(new File(generatedFilesPath.toString(), pdfOutPutFile.getName()))
 
-                                     File startDir = new File(getClass().getResource("createdFiles").toURI())
-                                     startDir.eachFileRecurse() {
-                                         if (it.name.endsWith('.png')  || it.name.endsWith('.pdf')) {
-                                             it.delete()
-                                         }
+                                    File startDir = new File(getClass().getResource("createdFiles").toURI())
+                                    startDir.eachFileRecurse() {
+                                        if (it.name.endsWith('.png')  || it.name.endsWith('.pdf')) {
+                                            it.delete()
+                                        }
                                      }
 
                                     redirect "/appear/$outputFilePath/$name"
