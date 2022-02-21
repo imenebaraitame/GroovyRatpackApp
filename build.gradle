@@ -35,7 +35,9 @@ dependencies {
 
 
     //ocr project dependencies
-    implementation 'net.sourceforge.tess4j:tess4j:4.1.1'
+    implementation ('net.sourceforge.tess4j:tess4j:4.1.1'){
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
     implementation 'com.itextpdf:itextpdf:5.5.13.2'
     implementation 'org.im4java:im4java:1.4.0'
     implementation 'org.apache.pdfbox:pdfbox:2.0.24'
