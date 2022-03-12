@@ -11,11 +11,13 @@ import com.corposense.ocr.demo.PdfConverter
 
 import com.corposense.ocr.demo.TextPdf
 import com.corposense.ocr.demo.Utils
-
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import ratpack.form.Form
 import ratpack.form.UploadedFile
 import ratpack.thymeleaf3.ThymeleafModule
 import java.nio.file.Path
+
 
 import static ratpack.thymeleaf3.Template.thymeleafTemplate
 import static ratpack.groovy.Groovy.ratpack
@@ -35,6 +37,7 @@ Path generatedFilesPath = baseGeneratedFilesDir.resolve(generatedFilesDir)
 Path uploadPath = baseDir.resolve(uploadDir)
 Path createdFilesPath = baseCreatedFilesDir.resolve(createdFilesDir)
 
+final Logger log = LoggerFactory.getLogger(ratpack)
 
 ratpack {
     serverConfig {
@@ -87,7 +90,6 @@ ratpack {
 
                                     fileService.deleteFiles("${createdFilesPath}")
                                     redirect "/show/$outputFilePath/$name"
-
                                 }
                                 if(options == "Textoverlay"){
                                     pdfConverter.produceTextOverlay("${inputfilePath}")
@@ -143,14 +145,14 @@ ratpack {
         get('name/:id'){
             File filePath = new File("${uploadPath}/${pathTokens['id']}")
             // you'd better check if the file exists...
-            println("filePath: ${filePath}, exists: ${filePath.exists()}")
+            log.info("filePath: ${filePath}, exists: ${filePath.exists()}")
             render Paths.get(filePath.toURI())
         }
 
         get('file/:id'){
             File filePath = new File("${generatedFilesPath}/${pathTokens['id']}")
             // you'd better check if the file exists...
-            println("filePath: ${filePath}, exists: ${filePath.exists()}")
+            log.info("filePath: ${filePath}, exists: ${filePath.exists()}")
             render Paths.get(filePath.toURI())
         }
 
