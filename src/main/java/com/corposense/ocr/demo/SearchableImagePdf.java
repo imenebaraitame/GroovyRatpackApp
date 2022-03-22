@@ -10,7 +10,6 @@ import org.im4java.core.IM4JavaException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,9 +19,8 @@ import java.util.List;
 public class SearchableImagePdf {
 	String input_file; String output_file; String configfileValue;
 
-	Path dirPath = Paths.get("public/generatedFiles/createdFiles");
-	String dirp = dirPath.toAbsolutePath().toString();
-	public File dir = new File(dirp);
+	public static String dirPath = Paths.get("public/generatedFiles/createdFiles").toAbsolutePath().toString();
+	public File dir = new File(dirPath);
 
 	@Inject
 	public SearchableImagePdf(String input_file, String output_file, String configfileValue){
@@ -57,8 +55,9 @@ public class SearchableImagePdf {
 
 		for (int i = 1; i <= pageNum; i++) {
 			String extractedImgName = "ExtractedImage_" + i + ".png";
-			ImageProcessing image = new ImageProcessing(extractedImgName);
-			String imageDeskew = image.deskewImage(extractedImgName, i);
+			File extractedImgFile = new File(dirPath,extractedImgName);
+			ImageProcessing image = new ImageProcessing();
+			String imageDeskew = image.deskewImage(extractedImgFile, i);
 			String imageNBorder = image.removeBorder(imageDeskew,i);
 			String binaryInv = image.binaryInverse(imageNBorder, i);
 			String finalImage = image.imageTransparent(imageNBorder,binaryInv, i);

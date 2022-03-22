@@ -130,15 +130,6 @@ ratpack {
                             }
                 })
             }
-            get(":outputFilePath"){
-                FileService fileService ->
-                    response.sendFile(fileService.get(pathTokens.outputFilePath))
-            }
-
-            get(":name"){
-                FileService fileService ->
-                    response.sendFile(fileService.get(pathTokens.name))
-            }
 
         }
 
@@ -174,10 +165,8 @@ ratpack {
         }
 
         get{
-            String SearchablePDF = "Create a searchable pdf with invisible text layer"
-            String Textoverlay = "Just extract and show overlay"
-            LinkedHashMap options = ['pdf':SearchablePDF,'text':Textoverlay ]
-            render(thymeleafTemplate("index",options))
+
+            render(thymeleafTemplate("index"))
         }
 
     }

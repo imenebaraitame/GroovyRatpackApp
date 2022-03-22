@@ -17,7 +17,7 @@ public class TextPdf {
     private final String fullText;
     private final String docPath;
 
-    public String dirPath = Paths.get("public/generatedFiles/createdFiles").toAbsolutePath().toString();
+    public static String dirPath = Paths.get("public/generatedFiles/createdFiles").toAbsolutePath().toString();
     public File dir = new File(dirPath);
 
 
@@ -51,8 +51,9 @@ public class TextPdf {
             IOException, InterruptedException, IM4JavaException {
         for( int i = 1 ; i <= pageNum; i++){
             String extractedImgName = "ExtractedImage_" + i + ".png";
-            ImageProcessing image = new ImageProcessing(extractedImgName);
-            String imageDeskew = image.deskewImage(extractedImgName, i);
+            ImageProcessing image = new ImageProcessing();
+            File extractedImgFile = new File(dirPath,extractedImgName);
+            String imageDeskew = image.deskewImage(extractedImgFile , i);
             String imageNBorder = image.removeBorder(imageDeskew,i);
             String binaryInv = image.binaryInverse(imageNBorder, i);
             String finalImage = image.imageTransparent(imageNBorder,binaryInv, i);

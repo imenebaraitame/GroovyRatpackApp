@@ -44,8 +44,8 @@
 
     <label>please Choose one of these options:</label>
     <select id="options" name="options" >
-        <option th:value="'SearchablePDF'" th:text="${pdf}"></option>
-        <option th:value="'Textoverlay'" th:text="${text}" th:selected="${text}"></option>
+        <option th:value="'SearchablePDF'">Create a searchable pdf with invisible text layer</option>
+        <option th:value="'Textoverlay'">Just extract and show overlay</option>
     </select>
 
     <input type="submit" value=" Start OCR">

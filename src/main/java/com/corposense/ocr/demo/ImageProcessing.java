@@ -21,10 +21,10 @@ public class ImageProcessing {
 
 	public static final String IMAGE_MAGICK_PATH;
 	public static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
-	private String imagePath;
+
 
 	public String dirPath = Paths.get("public/generatedFiles/createdFiles").toAbsolutePath().toString();
-	public File dir = new File(dirPath);
+
 
 	static {
 		if (Utils.isWindows()){
@@ -35,15 +35,15 @@ public class ImageProcessing {
 	}
 
 	@Inject
-	public ImageProcessing(String imagePath){
-		this.imagePath = imagePath;
+	public ImageProcessing(){
+
 	}
 	
 	/*
 	 * Straightening a rotated image.
 	 */
-  public String deskewImage(String inputImgPath , int num) throws IOException {
-	  	BufferedImage bi = ImageIO.read(new File(dirPath,inputImgPath));
+  public String deskewImage(File inputImgPath , int num) throws IOException {
+	  	BufferedImage bi = ImageIO.read(inputImgPath);
 	    ImageDeskew id = new ImageDeskew(bi);
 	    double imageSkewAngle = id.getSkewAngle(); // determine skew angle
 	    if ((imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle < -(MINIMUM_DESKEW_THRESHOLD))) {
@@ -53,20 +53,8 @@ public class ImageProcessing {
 	    ImageIO.write(bi, "png", new File(dirPath,straightenImgPath));
 	    return straightenImgPath;
 	}
-	public String rotateImage(String inputImgPath , int num) throws IOException {
-		BufferedImage bi = ImageIO.read( new File(inputImgPath));
-		ImageDeskew id = new ImageDeskew(bi);
-		double imageSkewAngle = id.getSkewAngle(); // determine skew angle
-		if ((imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle < -(MINIMUM_DESKEW_THRESHOLD))) {
-			bi = ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image
-		}
-		String straightenImgPath = "deskewImage_" + num + ".png";
-		ImageIO.write(bi, "png", new File(dirPath,straightenImgPath));
 
-		return straightenImgPath;
-	}
-
-  /*
+   /*
 	 Get rid of a black border around image.
 
 	 */

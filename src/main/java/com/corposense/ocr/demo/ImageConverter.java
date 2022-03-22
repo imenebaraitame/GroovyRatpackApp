@@ -3,6 +3,7 @@ package com.corposense.ocr.demo;
 import com.google.inject.Inject;
 import org.im4java.core.IM4JavaException;
 
+import java.io.File;
 import java.io.IOException;
 
 public class ImageConverter {
@@ -12,8 +13,9 @@ public class ImageConverter {
 
     }
     public String createTextOnlyPdf(String inputFile) throws IOException, InterruptedException, IM4JavaException {
-        ImageProcessing image = new ImageProcessing(inputFile);
-        String imageDeskew = image.rotateImage(inputFile, 1);
+        ImageProcessing image = new ImageProcessing();
+        File uploadedImg = new File(inputFile);
+        String imageDeskew = image.deskewImage(uploadedImg, 1);
         String imageNBorder = image.removeBorder(imageDeskew,1);
         String binaryInv = image.binaryInverse(imageNBorder, 1);
         String finalImage = image.imageTransparent(imageNBorder,binaryInv, 1);
@@ -28,8 +30,9 @@ public class ImageConverter {
     }
 
     public String produceText(String inputFile) throws IOException, InterruptedException, IM4JavaException {
-        ImageProcessing image = new ImageProcessing(inputFile);
-        String imageDeskew = image.rotateImage(inputFile, 1);
+        ImageProcessing image = new ImageProcessing();
+        File uploadedImg = new File(inputFile);
+        String imageDeskew = image.deskewImage(uploadedImg, 1);
         String imageNBorder = image.removeBorder(imageDeskew,1);
         String binaryInv = image.binaryInverse(imageNBorder, 1);
         String finalImage = image.imageTransparent(imageNBorder,binaryInv, 1);
